@@ -1,0 +1,14 @@
+{
+	"scripts": {
+		"deploy:MockERC20:testnet": "forge script script/mocks/MockERC20Script.s.sol:MockERC20Script --rpc-url arbitrum_sepolia_rpc --broadcast --verify",
+		"deploy:MockERC4626:testnet": "forge script script/mocks/MockERC4626Script.s.sol:MockERC4626Script --rpc-url arbitrum_sepolia_rpc --broadcast --verify",
+		"deploy:RfyVaultScript:testnet": "forge script script/RfyVaultScript.s.sol:RfyVaultScript --rpc-url arbitrum_sepolia_rpc --broadcast --verify",
+		"deploy:RfyVaultFactoryScript:testnet": "forge script script/RfyVaultFactoryScript.s.sol:RfyVaultFactoryScript --rpc-url arbitrum_sepolia_rpc --broadcast --verify",
+		"deployNewVault:testnet": "forge script script/DeployNewVault.s.sol:DeployNewVault --rpc-url arbitrum_sepolia_rpc --broadcast --verify",
+		"deploy:RfyVaultScript:mainnnet": "forge script script/RfyVaultScript.s.sol:RfyVaultScript --rpc-url arbitrum_rpc --broadcast --verify",
+		"test": "forge script script/Test.s.sol:TestVault --rpc-url arbitrum_sepolia_rpc --broadcast"
+	},
+	"dependencies": {
+		"prettier-plugin-solidity": "^1.4.2"
+	}
+}

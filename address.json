@@ -1,0 +1,64 @@
+{
+	"arbitrum_sepolia": {
+		"RfyVaultFactory": "0xf82C07874b56C367e0815396207052820f49DdDa",
+		"MockERC20": {
+			"USDC": "0x2A70413578331a2E0B62CcfD5bAdd02736B67a96",
+			"WETH": "0x9d10ad9c4D53a61eAA5AB5CD70050FFC322c6731",
+			"WBTC": "0x09b1e5f6e53FE41C5CA171F547c71b76044e29Ed"
+		},
+		"MockERC4626": {
+			"USDC": "0x95F76A95868624cB24601C776dD9Eef7954F0815",
+			"WETH": "0xD55EA6B75D7D23710da20eD28F453fD0D263B86e",
+			"WBTC": "0x95379770C92c466b2a101915cf15B563d3A69AD4"
+		},
+		"RfyVault": {
+			"BTC_SuperBull_Monthly": {
+				"Proxy": "0x7A2F19F9A5e70D1AcbD1B8a8E8052aD4F5f9b0B8",
+				"Implementation": "0x9Fa81E2ee5feBc737b5a1b1AdA4D1314Fa130524"
+			},
+			"BTC_SuperBull_Quaterly": {
+				"Proxy": "0x5CA5Aa9cA6D071D9555768A8C29C725F1CE3EE10",
+				"Implementation": "0x9Fa81E2ee5feBc737b5a1b1AdA4D1314Fa130524"
+			},
+			"ETH_SuperBull_Monthly": {
+				"Proxy": "0xb4E413fA5B465d56C60161b60288e343F1819Df1",
+				"Implementation": "0x9Fa81E2ee5feBc737b5a1b1AdA4D1314Fa130524"
+			},
+			"ETH_SuperBull_Quaterly": {
+				"Proxy": "0xCCa447869f8Ff32e4fc806d8C09C11C4c7C76e1f",
+				"Implementation": "0x9Fa81E2ee5feBc737b5a1b1AdA4D1314Fa130524"
+			}
+		}
+	},
+	"arbitrum": {
+		"RfyVaultFactory": "",
+		"MockERC20": {
+			"USDC": "",
+			"WETH": "",
+			"WBTC": ""
+		},
+		"MockERC4626": {
+			"USDC": "",
+			"WETH": "",
+			"WBTC": ""
+		},
+		"RfyVault": {
+			"BTC_SuperBull_Monthly": {
+				"Proxy": "",
+				"Implementation": ""
+			},
+			"BTC_SuperBull_Quaterly": {
+				"Proxy": "",
+				"Implementation": ""
+			},
+			"ETH_SuperBull_Monthly": {
+				"Proxy": "",
+				"Implementation": ""
+			},
+			"ETH_SuperBull_Quaterly": {
+				"Proxy": "",
+				"Implementation": ""
+			}
+		}
+	}
+}
