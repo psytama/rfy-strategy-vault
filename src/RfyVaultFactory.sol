@@ -18,6 +18,9 @@ contract RfyVaultFactory is Ownable, IRfyVaultFactory {
 	
 	/// @dev deployers mapping to track addresses allowed to create vaults
 	mapping(address => bool) public override deployers;
+	
+	/// @dev Array to store all created vault addresses
+	address[] public vaults;
 
 	/**
 	 * @dev Constructor that initializes the Ownable parent contract and sets the implementation address
@@ -83,7 +86,10 @@ contract RfyVaultFactory is Ownable, IRfyVaultFactory {
 			_maxTotalDeposits
 		);
 
-		emit VaultCreated(address(newVault), _asset, _externalVault);
+		// Store the vault in our registry
+		vaults.push(newVault);
+
+		emit VaultCreated(address(newVault), _asset, _externalVault, vaults.length - 1);
 
 		return address(newVault);
 	}

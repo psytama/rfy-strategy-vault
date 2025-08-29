@@ -13,11 +13,13 @@ interface IRfyVaultFactory {
      * @param vaultAddress The address of the newly created RfyVault
      * @param asset The address of the asset token used by the RfyVault
      * @param externalVault The address of the external vault used by the RfyVault
+     * @param vaultIndex The index of the vault in the vaults array
      */
     event VaultCreated(
         address indexed vaultAddress,
         address asset,
-        address externalVault
+        address externalVault,
+        uint256 vaultIndex
     );
     
     /**
@@ -85,5 +87,5 @@ interface IRfyVaultFactory {
      * @param _deployer address of the deployer
      * @return status where address is a deployewr
      */
-    function deployers(address _deployer) external view returns (bool); 
+    function deployers(address _deployer) external view returns (bool);
 }
