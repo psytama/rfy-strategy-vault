@@ -39,6 +39,9 @@ interface IRfyVaultFactory {
     /// @dev Error thrown when implementation address is invalid
     error SVF_NotDeployer();
 
+    /// @dev Error thrown when epoch duration is invalid
+    error SVF_InvalidEpochDuration();
+
     /**
      * @notice Creates a new RfyVault instance
      * @dev Only callable by the contract owner

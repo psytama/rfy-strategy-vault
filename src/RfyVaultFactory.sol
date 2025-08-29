@@ -65,6 +65,8 @@ contract RfyVaultFactory is Ownable, IRfyVaultFactory {
 			revert SVF_InvalidAddress();
 		}
 
+		if (_epochDuration <= 0) revert SVF_InvalidEpochDuration();
+
 		address newVault = Clones.clone(rfyVaultImplementation);
 
 		RfyVault(newVault).initialize(
