@@ -141,8 +141,9 @@ contract RfyVault is
 	/**
 	 * @notice Allows trader to borrow funds during an active epoch
 	 * @param amount Amount to borrow
-	 */
-	function borrow(uint256 amount) external override onlyRole(TRADER_ROLE) {
+	 * @return amountReceived The amount transferred to the trader
+	 */ 
+	function borrow(uint256 amount) external override onlyRole(TRADER_ROLE) returns (uint256) {
 		if (amount == 0) revert SV_InvalidAmount();
 		EpochData storage epoch = _epochs[currentEpoch];
 		if (!epoch.isEpochActive) revert SV_EpochNotActive();
@@ -175,9 +176,25 @@ contract RfyVault is
 				epoch.currentExternalVaultDeposits = 0;
 			} else {
 				if (address(externalVault) != address(0)) {
-					externalVault.withdraw(borrowing, address(this), address(this));
+					// Calculate shares needed for the borrowing amount
+					uint256 sharesToRedeem = externalVault.previewWithdraw(borrowing);
+					
+					// Calculate what we expect based on proportional share value
+					uint256 expectedAssetsForShares = externalVault.previewRedeem(sharesToRedeem);
+					
+					uint256 actualAssetsReceived = externalVault.redeem(sharesToRedeem, address(this), address(this));
+					
+					// Track any profit/loss from the external vault
+					int256 pnlDifference = int256(actualAssetsReceived) - int256(expectedAssetsForShares);
+					epoch.externalVaultPnl += pnlDifference;
+					
+					// Update borrowing to the actual amount received
+					borrowing = actualAssetsReceived;
+					
+					// Calculate the proportional deposit amount that was withdrawn
+					uint256 proportionalDeposit = (sharesToRedeem * epoch.currentExternalVaultDeposits) / availableExternalVaultShares;
+					epoch.currentExternalVaultDeposits -= proportionalDeposit;
 				}
-				epoch.currentExternalVaultDeposits -= borrowing;
 			}
 		}
 
@@ -187,6 +204,8 @@ contract RfyVault is
 		IERC20(asset()).safeTransfer(msg.sender, amountToTransfer);
 
 		emit FundsBorrowed(msg.sender, amountToTransfer);
+		
+		return amountToTransfer;
 	}
 
 	/**

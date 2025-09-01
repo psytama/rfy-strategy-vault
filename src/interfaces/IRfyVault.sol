@@ -81,7 +81,7 @@ interface IRfyVault is IERC4626 {
 	function maxTotalDeposits() external view returns (uint256);
 
 	function startNewEpoch() external;
-	function borrow(uint256 amount) external;
+	function borrow(uint256 amount) external returns (uint256);
 	function settle(int256 pnl) external;
 
 	function setEpochDuration(uint256 newDuration) external;
