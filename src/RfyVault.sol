@@ -444,14 +444,8 @@ contract RfyVault is
 
 		uint256 unutilized = epoch.currentUnutilizedAsset;
 		uint256 externalVaultDeposits = _getExternalVaultPreviewRedeem();
-		uint256 totalAvailable;
-
-		if (externalVaultDeposits > epoch.currentExternalVaultDeposits) {
-			totalAvailable = unutilized + externalVaultDeposits;
-		} else {
-			totalAvailable = unutilized + epoch.currentExternalVaultDeposits;
-		}
-		return totalAvailable;
+		
+		return unutilized + externalVaultDeposits;
 	}
 
 	/**
