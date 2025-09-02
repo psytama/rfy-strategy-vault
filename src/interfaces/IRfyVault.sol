@@ -39,6 +39,9 @@ interface IRfyVault is IERC4626 {
 	error SV_NoAvailableFunds();
 	error SV_LossExceedsBorrowAmount();
 	error SV_ExternalVaultSharesZero();
+	error SV_ZeroSharesReceived();
+	error SV_ZeroAssetsReceived();
+	error SV_InsufficientMinimumDeposits();
 
 	/*//////////////////////////////////////////////////////////////
                                 EVENTS
@@ -80,7 +83,7 @@ interface IRfyVault is IERC4626 {
 	function memeName() external view returns (string memory);
 	function maxTotalDeposits() external view returns (uint256);
 
-	function startNewEpoch() external;
+	function startNewEpoch(uint256 minimumDeposits) external;
 	function borrow(uint256 amount) external returns (uint256);
 	function settle(int256 pnl) external;
 

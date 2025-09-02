@@ -109,7 +109,7 @@ contract RfyVaultVanillaFuzzTest is Test {
 
 	function testFuzz_BorrowErrors(uint256 borrowAmount) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		// Test zero amount
 		if (borrowAmount == 0) {
@@ -125,7 +125,7 @@ contract RfyVaultVanillaFuzzTest is Test {
 
 	function testFuzz_Borrow(uint256 borrowAmount) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		uint256 initialVaultAssets = vault.totalAssets();
 
 		IRfyVault.EpochData memory preEpochData = vault.getEpochData(vault.currentEpoch());
@@ -159,7 +159,7 @@ contract RfyVaultVanillaFuzzTest is Test {
 
 	function testFuzz_Settle(int96 pnl) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = vault.totalAssets() / 2;
 		vm.prank(trader);
@@ -235,7 +235,7 @@ contract RfyVaultVanillaFuzzTest is Test {
 		vm.stopPrank();
 
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(testUser);
 		vm.expectRevert(IRfyVault.SV_WithdrawalsArePaused.selector);
@@ -276,7 +276,7 @@ contract RfyVaultVanillaFuzzTest is Test {
 
 		// Start epoch
 		vm.startPrank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		uint256 preinitialVaultAssets = vault.totalAssets();
 
 		// Verify epoch started state
@@ -411,7 +411,7 @@ contract RfyVaultVanillaFuzzTest is Test {
 		lossPercentage = bound(lossPercentage, 0, 100);
 
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 4000e6;
 

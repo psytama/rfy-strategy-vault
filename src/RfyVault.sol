@@ -92,10 +92,19 @@ contract RfyVault is
     //////////////////////////////////////////////////////////////*/
 
 	/**
-	 * @notice Starts a new trading epoch
+	 * @notice Starts a new trading epoch with minimum deposit validation
 	 * @dev Only admin can start an epoch, and only when no epoch is active
+	 * @param minimumDeposits Minimum amount of deposits required to start the epoch
 	 */
-	function startNewEpoch() external override onlyRole(BOOTSTRAPPER_ROLE) {
+	function startNewEpoch(uint256 minimumDeposits) external override onlyRole(BOOTSTRAPPER_ROLE) {
+		_startNewEpoch(minimumDeposits);
+	}
+
+	/**
+	 * @notice Internal function to start a new trading epoch
+	 * @param minimumDeposits Minimum amount of deposits required to start the epoch (0 = no minimum)
+	 */
+	function _startNewEpoch(uint256 minimumDeposits) internal {
 		uint256 newEpochId = ++currentEpoch;
 		if (_epochs[newEpochId - 1].isEpochActive) {
 			revert SV_EpochActive();
@@ -105,6 +114,11 @@ contract RfyVault is
 
 		uint256 amountToDeposit = _totalAssets;
 		if (amountToDeposit == 0) revert SV_NoAvailableFunds();
+		
+		// Validate minimum deposits if specified
+		if (minimumDeposits > 0 && amountToDeposit < minimumDeposits) {
+			revert SV_InsufficientMinimumDeposits();
+		}
 
 		newEpoch.startTime = uint96(block.timestamp);
 		newEpoch.initialVaultAssets = amountToDeposit;
@@ -278,6 +292,7 @@ contract RfyVault is
 	) public override(ERC4626Upgradeable, IERC4626) nonReentrant returns (uint256) {
 		if (depositsPaused) revert SV_DepositsArePaused();
 		uint256 shares = super.deposit(assets, receiver);
+		if (shares == 0) revert SV_ZeroSharesReceived();
 		_totalAssets += assets;
 		return shares;
 	}
@@ -301,6 +316,7 @@ contract RfyVault is
 		if (depositsPaused) revert SV_DepositsArePaused();
 
 		uint256 actualAssets = super.mint(shares, receiver);
+		if (actualAssets == 0) revert SV_ZeroAssetsReceived();
 		_totalAssets += actualAssets;
 		return actualAssets;
 	}

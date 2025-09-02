@@ -159,7 +159,7 @@ contract RfyVaultVanillaUnitTest is Test {
 		vm.prank(admin);
 		vm.expectEmit(true, false, false, true);
 		emit EpochStarted(1, block.timestamp);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		assertTrue(vault.depositsPaused(), "Deposits should be paused");
 		assertTrue(vault.withdrawalsPaused(), "Withdrawals should be paused");
 		assertEq(vault.currentEpoch(), 1, "Incorrect epoch number");
@@ -191,16 +191,16 @@ contract RfyVaultVanillaUnitTest is Test {
 
 	function test_startNewEpoch_whenActive() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.prank(admin);
 		vm.expectRevert(IRfyVault.SV_EpochActive.selector);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 	}
 
 	function test_deposit_whenEpochActive() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(user1);
 		vm.expectRevert(IRfyVault.SV_DepositsArePaused.selector);
@@ -222,7 +222,7 @@ contract RfyVaultVanillaUnitTest is Test {
 		vm.prank(admin);
 		vm.expectEmit(true, false, false, true);
 		emit EpochStarted(1, block.timestamp);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		assertTrue(vault.depositsPaused(), "Deposits should be paused");
 		assertTrue(vault.withdrawalsPaused(), "Withdrawals should be paused");
 		assertEq(vault.currentEpoch(), 1, "Incorrect epoch number");
@@ -248,7 +248,7 @@ contract RfyVaultVanillaUnitTest is Test {
 
 	function test_withdraw_whenEpochActive() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(user1);
 		vm.expectRevert(IRfyVault.SV_WithdrawalsArePaused.selector);
@@ -275,13 +275,13 @@ contract RfyVaultVanillaUnitTest is Test {
 
 		vm.prank(admin);
 		vm.expectRevert(IRfyVault.SV_NoAvailableFunds.selector);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		vm.stopPrank();
 	}
 
 	function test_borrow() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 100e6;
 		vm.prank(trader);
@@ -304,7 +304,7 @@ contract RfyVaultVanillaUnitTest is Test {
 
 	function test_borrow_zeroAmount() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.prank(trader);
 		vm.expectRevert(IRfyVault.SV_InvalidAmount.selector);
@@ -313,7 +313,7 @@ contract RfyVaultVanillaUnitTest is Test {
 
 	function test_settle() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 100e6;
 		vm.prank(trader);
@@ -387,7 +387,7 @@ contract RfyVaultVanillaUnitTest is Test {
 		vm.startPrank(user1);
 
 		vm.expectRevert();
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.expectRevert();
 		vault.setDepositsPaused(true);
@@ -409,7 +409,7 @@ contract RfyVaultVanillaUnitTest is Test {
 
 	function test_onlyTraderFunctions() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(user1);
 
@@ -424,7 +424,7 @@ contract RfyVaultVanillaUnitTest is Test {
 
 	function test_settle_withNegativePnL() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 100e6;
 		vm.prank(trader);
@@ -455,7 +455,7 @@ contract RfyVaultVanillaUnitTest is Test {
 
 	function test_settle_ZeroBorrow() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.warp(block.timestamp + 31 days);
 		vm.startPrank(trader);
@@ -486,7 +486,7 @@ contract RfyVaultVanillaUnitTest is Test {
 
 	function test_settle_withZeroPnL() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 100e6;
 		vm.prank(trader);
@@ -528,7 +528,7 @@ contract RfyVaultVanillaUnitTest is Test {
 		vm.stopPrank();
 
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 100e6;
 		vm.prank(trader);

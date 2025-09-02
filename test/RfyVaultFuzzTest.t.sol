@@ -31,7 +31,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 	function testFuzz_BorrowErrors(uint256 borrowAmount) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		// Test zero amount
 		if (borrowAmount == 0) {
@@ -47,7 +47,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 	function testFuzz_Borrow(uint256 borrowAmount) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		uint256 initialVaultAssets = vault.totalAssets();
 
 		IRfyVault.EpochData memory preEpochData = vault.getEpochData(vault.currentEpoch());
@@ -81,7 +81,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 	function testFuzz_Settle(int96 pnl) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = vault.totalAssets() / 2;
 		vm.prank(trader);
@@ -158,7 +158,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		vm.stopPrank();
 
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(testUser);
 		vm.expectRevert(IRfyVault.SV_WithdrawalsArePaused.selector);
@@ -200,7 +200,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 		// Start epoch
 		vm.startPrank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		uint256 preinitialVaultAssets = vault.totalAssets();
 
 		// Verify epoch started state
@@ -355,7 +355,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		vm.stopPrank();
 
 		vm.startPrank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		IRfyVault.EpochData memory initialEpochData = vault.getEpochData(vault.currentEpoch());
 
@@ -397,7 +397,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		lossPercentage = bound(lossPercentage, 0, 100);
 
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 4000e6;
 
@@ -517,7 +517,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		vm.stopPrank();
 
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		// Record initial external vault deposits
 		IRfyVault.EpochData memory initialEpochData = vault.getEpochData(vault.currentEpoch());
