@@ -533,5 +533,23 @@ contract RfyVault is
 		emit DepositWithdrawalUnpaused();
 	}
 
+	/**
+	 * @notice Allows admin to withdraw reward tokens from external vault integrations
+	 * @dev Cannot withdraw the main vault asset to prevent fund theft
+	 * @param token The reward token address to withdraw
+	 * @param to The address to send the reward tokens to
+	 */
+	function withdrawRewards(address token, address to) external onlyRole(DEFAULT_ADMIN_ROLE) {
+		if (token == asset()) revert SV_InvalidAddress(); // Prevent withdrawing main asset
+		if (to == address(0)) revert SV_InvalidAddress();
+		
+		uint256 balance = IERC20(token).balanceOf(address(this));
+		if (balance == 0) revert SV_NoAvailableFunds();
+		
+		IERC20(token).safeTransfer(to, balance);
+		
+		emit RewardsWithdrawn(token, to, balance);
+	}
+
 	function _authorizeUpgrade(address) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }

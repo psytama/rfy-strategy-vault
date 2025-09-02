@@ -4,6 +4,7 @@ pragma solidity 0.8.28;
 import { RfyVaultBase } from "./setup/RfyVaultBase.t.sol";
 import { console } from "forge-std/Test.sol";
 import { IRfyVault } from "../src/interfaces/IRfyVault.sol";
+import { MockERC20 } from "./mocks/MockERC20.sol";
 
 contract RfyVaultUnitTest is RfyVaultBase {
 	function test_initialization() public view {
@@ -465,4 +466,81 @@ contract RfyVaultUnitTest is RfyVaultBase {
 		assertEq(updatedEpochData.currentUnutilizedAsset, 0, "Funds should be taken from unutilized first");
 		assertLt(updatedEpochData.currentExternalVaultDeposits, depositAmount, "Should Use some amount from Yearn");
 	}
+
+	function test_withdrawRewards_success() public {
+		// Deploy a mock reward token
+		MockERC20 rewardToken = new MockERC20("Reward Token", "REWARD", 18);
+		
+		// Send some reward tokens to the vault (simulating external vault rewards)
+		uint256 rewardAmount = 1000e18;
+		rewardToken.mint(address(vault), rewardAmount);
+		
+		// Verify vault received the tokens
+		assertEq(rewardToken.balanceOf(address(vault)), rewardAmount);
+		
+		// Admin should be able to withdraw reward tokens
+		vm.startPrank(admin);
+		
+		// Expect the event to be emitted
+		vm.expectEmit(true, true, false, true);
+		emit RewardsWithdrawn(address(rewardToken), admin, rewardAmount);
+		
+		vault.withdrawRewards(address(rewardToken), admin);
+		vm.stopPrank();
+		
+		// Verify tokens were transferred
+		assertEq(rewardToken.balanceOf(address(vault)), 0);
+		assertEq(rewardToken.balanceOf(admin), rewardAmount);
+	}
+
+	function test_withdrawRewards_onlyAdmin() public {
+		// Deploy a mock reward token
+		MockERC20 rewardToken = new MockERC20("Reward Token", "REWARD", 18);
+		rewardToken.mint(address(vault), 1000e18);
+		
+		// Non-admin should not be able to withdraw rewards
+		vm.startPrank(user1);
+		vm.expectRevert();
+		vault.withdrawRewards(address(rewardToken), user1);
+		vm.stopPrank();
+		
+		// Trader should not be able to withdraw rewards
+		vm.startPrank(trader);
+		vm.expectRevert();
+		vault.withdrawRewards(address(rewardToken), trader);
+		vm.stopPrank();
+	}
+
+	function test_withdrawRewards_cannotWithdrawMainAsset() public {
+		// Admin should not be able to withdraw the main vault asset (USDC)
+		vm.startPrank(admin);
+		vm.expectRevert(IRfyVault.SV_InvalidAddress.selector);
+		vault.withdrawRewards(USDC, admin);
+		vm.stopPrank();
+	}
+
+	function test_withdrawRewards_invalidAddress() public {
+		MockERC20 rewardToken = new MockERC20("Reward Token", "REWARD", 18);
+		rewardToken.mint(address(vault), 1000e18);
+		
+		// Should revert with zero address
+		vm.startPrank(admin);
+		vm.expectRevert(IRfyVault.SV_InvalidAddress.selector);
+		vault.withdrawRewards(address(rewardToken), address(0));
+		vm.stopPrank();
+	}
+
+	function test_withdrawRewards_noBalance() public {
+		MockERC20 rewardToken = new MockERC20("Reward Token", "REWARD", 18);
+		// Don't mint any tokens to the vault
+		
+		// Should revert when trying to withdraw with zero balance
+		vm.startPrank(admin);
+		vm.expectRevert(IRfyVault.SV_NoAvailableFunds.selector);
+		vault.withdrawRewards(address(rewardToken), admin);
+		vm.stopPrank();
+	}
+
+	// Add the event declaration for testing
+	event RewardsWithdrawn(address indexed token, address indexed to, uint256 amount);
 }

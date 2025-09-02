@@ -56,6 +56,7 @@ interface IRfyVault is IERC4626 {
 	event DepositWithdrawalPaused();
 	event DepositWithdrawalUnpaused();
 	event EpochDurationUpdated(uint256 newDuration);
+	event RewardsWithdrawn(address indexed token, address indexed to, uint256 amount);
 
 	/*//////////////////////////////////////////////////////////////
                             FUNCTIONS
