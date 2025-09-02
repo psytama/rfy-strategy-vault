@@ -133,7 +133,8 @@ contract RfyVault is
 		// Deposit all available funds into external vault
 		if (address(externalVault) != address(0)) {
 			IERC20(asset()).approve(address(externalVault), amountToDeposit);
-			externalVault.deposit(amountToDeposit, address(this));
+			uint256 sharesReceived = externalVault.deposit(amountToDeposit, address(this));
+    		if (sharesReceived == 0) revert SV_ZeroSharesReceived();
 		}
 
 		newEpoch.initialExternalVaultDeposits = amountToDeposit;
