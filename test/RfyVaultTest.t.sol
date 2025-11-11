@@ -291,6 +291,21 @@ contract RfyVaultTest is RfyVaultBase {
 	}
 
 	function test_ExternalVaultProfitBorrow() public {
+		// Test that withdrawals are paused by default
+		uint256 user1Balance = vault.balanceOf(user1);
+		vm.prank(user1); 
+		vm.expectRevert(IRfyVault.SV_WithdrawalsArePaused.selector);
+		vault.redeem(user1Balance - 25e6, user1, user1); 
+		
+		// Test passes - withdrawals are properly paused as expected
+		assertTrue(vault.withdrawalsPaused(), "Withdrawals should be paused by default");
+	}
+
+	function test_ExternalVaultProfitBorrow_AfterUnpause() public {
+		// Admin unpauses withdrawals first to test the original functionality
+		vm.prank(admin);
+		vault.setWithdrawalsPaused(false);
+		
 		// Setup: Start with 100 USDC in external vault
 		vm.startPrank(user1); vault.redeem(vault.balanceOf(user1) - 25e6, user1, user1); vm.stopPrank();
 		vm.startPrank(user2); vault.redeem(vault.balanceOf(user2) - 25e6, user2, user2); vm.stopPrank();
@@ -335,8 +350,23 @@ contract RfyVaultTest is RfyVaultBase {
 	}
 
 	function test_ExternalVaultRoundingEdgeCase() public {
+		// Test that withdrawals are paused by default
+		uint256 user1Balance = vault.balanceOf(user1);
+		vm.prank(user1); 
+		vm.expectRevert(IRfyVault.SV_WithdrawalsArePaused.selector);
+		vault.redeem(user1Balance - 25e6, user1, user1); 
+		
+		// Test passes - withdrawals are properly paused as expected
+		assertTrue(vault.withdrawalsPaused(), "Withdrawals should be paused by default");
+	}
+
+	function test_ExternalVaultRoundingEdgeCase_AfterUnpause() public {
 		// This test simulates the scenario where external vault has rounding issues
 		// that cause all shares to be burned during a partial withdrawal
+		
+		// Admin unpauses withdrawals first to test the original functionality  
+		vm.prank(admin);
+		vault.setWithdrawalsPaused(false);
 		
 		// Setup: Start with some deposits
 		vm.startPrank(user1); vault.redeem(vault.balanceOf(user1) - 25e6, user1, user1); vm.stopPrank();

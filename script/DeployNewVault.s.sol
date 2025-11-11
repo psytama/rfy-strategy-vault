@@ -12,7 +12,7 @@ contract DeployNewVault is Script {
 	IRfyVault vault;
 
 	function run() external {
-		IRfyVaultFactory rfyVaultFactory = IRfyVaultFactory(vm.envAddress("RFY_VAULT_FACTORY"));
+		IRfyVaultFactory rfyVaultFactory = IRfyVaultFactory(0x51eCE283e41f2Bb9928746ACE0028ef77F30b3ba);
 		address assetAddress = vm.envAddress("USDC_ADDRESS");
 		address yearnVault = vm.envAddress("YEARN_ADDRESS");
 		address trader = vm.envAddress("TRADER_ADDRESS");
@@ -21,8 +21,8 @@ contract DeployNewVault is Script {
 
 		vm.startBroadcast(deployerPrivateKey);
 		string memory tokenName = "RfyVault";
-		string memory tokenSymbol = "RfyVault";
-		uint256 epochDuration = 20 minutes;
+		string memory tokenSymbol = "Rfy";
+		uint256 epochDuration = 7 days;
 
 		vault = IRfyVault(
 			rfyVaultFactory.createVault(
@@ -34,7 +34,7 @@ contract DeployNewVault is Script {
 				trader,
 				yearnVault,
 				epochDuration,
-				1_000_000e6  // maxTotalDeposits
+				1_000_00e6  // maxTotalDeposits
 			)
 		);
 

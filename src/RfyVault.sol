@@ -85,6 +85,7 @@ contract RfyVault is
 		externalVault = IERC4626(_externalVault);
 		memeName = _memeName;
 		maxTotalDeposits = _maxTotalDeposits;
+		withdrawalsPaused = true;
 	}
 
 	/*//////////////////////////////////////////////////////////////
@@ -156,15 +157,13 @@ contract RfyVault is
     //////////////////////////////////////////////////////////////*/
 
 	/**
-	 * @notice Allows trader to borrow funds during an active epoch
+	 * @notice Internal function to handle borrowing logic for both trader and admin
 	 * @param amount Amount to borrow
-	 * @return amountReceived The amount transferred to the trader
-	 */ 
-	function borrow(uint256 amount) external override onlyRole(TRADER_ROLE) returns (uint256) {
-		if (amount == 0) revert SV_InvalidAmount();
+	 * @return amountToTransfer The total amount that will be transferred
+	 */
+	function _processBorrow(uint256 amount) internal returns (uint256) {
 		EpochData storage epoch = _epochs[currentEpoch];
-		if (!epoch.isEpochActive) revert SV_EpochNotActive();
-
+		
 		uint256 unutilized = epoch.currentUnutilizedAsset;
 		uint256 availableExternalVaultShares = _getExternalVaultBalance();
 
@@ -215,7 +214,20 @@ contract RfyVault is
 			}
 		}
 
-		uint256 amountToTransfer = utilizing + borrowing;
+		return utilizing + borrowing;
+	}
+
+	/**
+	 * @notice Allows trader to borrow funds during an active epoch
+	 * @param amount Amount to borrow
+	 * @return amountReceived The amount transferred to the trader
+	 */ 
+	function borrow(uint256 amount) external override onlyRole(TRADER_ROLE) returns (uint256) {
+		if (amount == 0) revert SV_InvalidAmount();
+		EpochData storage epoch = _epochs[currentEpoch];
+		if (!epoch.isEpochActive) revert SV_EpochNotActive();
+
+		uint256 amountToTransfer = _processBorrow(amount);
 
 		epoch.fundsBorrowed += amountToTransfer;
 		IERC20(asset()).safeTransfer(msg.sender, amountToTransfer);
@@ -226,6 +238,24 @@ contract RfyVault is
 	}
 
 	/**
+	 * @notice Allows admin to borrow funds during an active epoch
+	 * @param amount Amount to borrow
+	 * @return amountReceived The amount transferred to the admin
+	 */ 
+	function adminBorrow(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256) {
+		if (amount == 0) revert SV_InvalidAmount();
+		EpochData storage epoch = _epochs[currentEpoch];
+		if (!epoch.isEpochActive) revert SV_EpochNotActive();
+
+		uint256 amountToTransfer = _processBorrow(amount);
+
+		epoch.adminFundsBorrowed += amountToTransfer;
+		IERC20(asset()).safeTransfer(msg.sender, amountToTransfer);
+
+		emit AdminFundsBorrowed(msg.sender, amountToTransfer);
+		
+		return amountToTransfer;
+	}	/**
 	 * @notice Settles borrowed funds with PnL
 	 * @param pnl Profit (positive) or loss (negative)
 	 */
@@ -259,9 +289,9 @@ contract RfyVault is
 
 			realizedExternalVaultPnl += int256(assets_) - int256(epoch.currentExternalVaultDeposits);
 		}
-		int256 totalPnl = pnl + realizedExternalVaultPnl;
+		int256 totalPnl = pnl + realizedExternalVaultPnl + epoch.adminPnl;
 
-		// Update total assets based on PnL
+		// Update total assets based on PnL (including admin PnL)
 		uint256 finalVaultAssets = uint256(int256(epoch.initialVaultAssets) + totalPnl);
 		_totalAssets = finalVaultAssets;
 		// Update epoch final state
@@ -280,6 +310,36 @@ contract RfyVault is
 
 		emit FundsSettled(msg.sender, fundsBorrowed_, pnl);
 		emit EpochEnded(currentEpoch, block.timestamp);
+	}
+
+	/**
+	 * @notice Admin settles borrowed funds and calculates PnL without ending the epoch
+	 * @param amount Amount being returned by admin
+	 */
+	function adminSettle(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
+		EpochData storage epoch = _epochs[currentEpoch];
+		if (!epoch.isEpochActive) revert SV_EpochNotActive();
+
+		uint256 adminFundsBorrowed_ = epoch.adminFundsBorrowed;
+		if (adminFundsBorrowed_ == 0) revert SV_NoAvailableFunds(); // No funds borrowed by admin
+
+		// Transfer returned funds from admin
+		if (amount != 0) {
+			IERC20(asset()).safeTransferFrom(msg.sender, address(this), amount);
+		}
+
+		// Calculate admin PnL: returned amount minus borrowed amount
+		int256 adminPnl = int256(amount) - int256(adminFundsBorrowed_);
+		
+		// Update epoch admin PnL and reset borrowed amount
+		epoch.adminPnl += adminPnl;
+		epoch.adminFundsBorrowed = 0;
+
+		// Update total assets to reflect the net PnL effect
+		// Since we never subtracted the borrowed amount, we only add the PnL
+		_totalAssets = uint256(int256(_totalAssets) + adminPnl);
+
+		emit AdminFundsSettled(msg.sender, adminFundsBorrowed_, amount, adminPnl);
 	}
 	/*//////////////////////////////////////////////////////////////
                         CORE VAULT LOGIC
@@ -441,6 +501,20 @@ contract RfyVault is
 	 * @return The maximum amount that can be borrowed
 	 */
 	function maxBorrow() public view override returns (uint256) {
+		EpochData memory epoch = _epochs[currentEpoch];
+		if (!epoch.isEpochActive) return 0;
+
+		uint256 unutilized = epoch.currentUnutilizedAsset;
+		uint256 externalVaultDeposits = _getExternalVaultPreviewRedeem();
+		
+		return unutilized + externalVaultDeposits;
+	}
+
+	/**
+	 * @notice Returns the maximum amount that can be borrowed by admin during an active epoch
+	 * @return The maximum amount that can be borrowed by admin
+	 */
+	function maxAdminBorrow() public view returns (uint256) {
 		EpochData memory epoch = _epochs[currentEpoch];
 		if (!epoch.isEpochActive) return 0;
 

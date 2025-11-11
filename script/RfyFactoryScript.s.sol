@@ -9,7 +9,7 @@ contract RfyVaultFactoryScript is Script {
 
 	function run() external {
 		uint256 deployerPrivateKey = vm.envUint("DEV_PRIVATE_KEY");
-		address rfyVaultImplementation = vm.envAddress("RFY_VAULT_IMPLEMENTATION");
+		address rfyVaultImplementation = 0xF0f0fFa36a49bE7e0a23EB470FCFDC6e78175fDB;
 
 		vm.startBroadcast(deployerPrivateKey);
 

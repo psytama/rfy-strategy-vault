@@ -19,9 +19,11 @@ interface IRfyVault is IERC4626 {
 		uint256 currentExternalVaultDeposits; // Current amount of assets deposited into external vault
 		uint256 currentUnutilizedAsset; // Current amount of unutilized assets
 		uint256 fundsBorrowed; // Amount currently borrowed by trader
+		uint256 adminFundsBorrowed; // Amount currently borrowed by admin
 		uint256 finalVaultAssets; // Total assets in the vault at the end of the epoch
 		int256 externalVaultPnl; // Profit/loss from external vault investments after settlement
 		int256 tradingPnl; // Trading profit/loss after settlement
+		int256 adminPnl; // Admin profit/loss after settlement
 	}
 
 	/*//////////////////////////////////////////////////////////////
@@ -51,6 +53,8 @@ interface IRfyVault is IERC4626 {
 	event EpochEnded(uint256 indexed epochId, uint256 timestamp);
 	event FundsBorrowed(address indexed trader, uint256 amount);
 	event FundsSettled(address indexed trader, uint256 amount, int256 pnl);
+	event AdminFundsBorrowed(address indexed admin, uint256 amount);
+	event AdminFundsSettled(address indexed admin, uint256 borrowed, uint256 returned, int256 pnl);
 	event DepositsStatusUpdated(bool paused);
 	event WithdrawalsStatusUpdated(bool paused);
 	event DepositWithdrawalPaused();
@@ -80,6 +84,7 @@ interface IRfyVault is IERC4626 {
 	function withdrawalsPaused() external view returns (bool);
 	function externalVault() external view returns (IERC4626);
 	function maxBorrow() external view returns (uint256);
+	function maxAdminBorrow() external view returns (uint256);
 	function getEpochData(uint256 epochId) external view returns (EpochData memory);
 	function memeName() external view returns (string memory);
 	function maxTotalDeposits() external view returns (uint256);
@@ -87,6 +92,8 @@ interface IRfyVault is IERC4626 {
 	function startNewEpoch(uint256 minimumDeposits) external;
 	function borrow(uint256 amount) external returns (uint256);
 	function settle(int256 pnl) external;
+	function adminBorrow(uint256 amount) external returns (uint256);
+	function adminSettle(uint256 amount) external;
 
 	function setEpochDuration(uint256 newDuration) external;
 	function setDepositsPaused(bool paused) external;
