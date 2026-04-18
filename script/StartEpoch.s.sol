@@ -20,34 +20,41 @@ import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/I
  */
 contract StartEpoch is Script {
     // Default values
-    uint256 public constant DEFAULT_MINIMUM_DEPOSITS = 1000000; // No minimum by default
+    uint256 public constant DEFAULT_MINIMUM_DEPOSITS = 0; // No minimum by default
+    
+    // Botanix Vault Addresses
+    address public constant PBTC_VAULT = 0xB819B78798C174fA9e80aD26903EACb27c68CfD6;
+    address public constant STBTC_VAULT = 0x5107b03D9b4fB135A58435a4507716304372645b;
+    address public constant USDC_VAULT = 0x644C81Bac306A4dCAAeaFfe66B284E4F7B245227;
     
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address vaultAddress = vm.envAddress("VAULT_ADDRESS");
+        uint256 minimumDeposits = DEFAULT_MINIMUM_DEPOSITS;
         
-        // Get minimum deposits from env or use default
-        uint256 minimumDeposits;
-        try vm.envUint("MINIMUM_DEPOSITS") returns (uint256 minDeposits) {
-            minimumDeposits = minDeposits;
-        } catch {
-            minimumDeposits = DEFAULT_MINIMUM_DEPOSITS;
-        }
-        
-        IRfyVault vault = IRfyVault(vaultAddress);
-        
-        // Pre-flight checks
-        _performPreflightChecks(vault, minimumDeposits);
+        IRfyVault pbtcVault = IRfyVault(PBTC_VAULT);
+        IRfyVault stbtcVault = IRfyVault(STBTC_VAULT);
+        IRfyVault usdcVault = IRfyVault(USDC_VAULT);
         
         vm.startBroadcast(deployerPrivateKey);
         
-        // Start the epoch
-        vault.startNewEpoch(minimumDeposits);
+        // Start epoch for pBTC Vault
+        console.log("Starting epoch for pBTC Vault...");
+        pbtcVault.startNewEpoch(minimumDeposits);
+        
+        // Start epoch for stBTC Vault
+        console.log("Starting epoch for stBTC Vault...");
+        stbtcVault.startNewEpoch(minimumDeposits);
+        
+        // Start epoch for USDC Vault
+        console.log("Starting epoch for USDC Vault...");
+        usdcVault.startNewEpoch(minimumDeposits);
         
         vm.stopBroadcast();
         
         // Post-epoch summary
-        _logEpochSummary(vault);
+        _logEpochSummary(pbtcVault, "pBTC");
+        _logEpochSummary(stbtcVault, "stBTC");
+        _logEpochSummary(usdcVault, "USDC");
     }
     
     function _performPreflightChecks(IRfyVault vault, uint256 minimumDeposits) internal view {
@@ -117,9 +124,9 @@ contract StartEpoch is Script {
         console.log("");
     }
     
-    function _logEpochSummary(IRfyVault vault) internal view {
+    function _logEpochSummary(IRfyVault vault, string memory vaultName) internal view {
         console.log("\n================================================================");
-        console.log("                    EPOCH STARTED SUCCESSFULLY");
+        console.log("           ", vaultName, "VAULT - EPOCH STARTED SUCCESSFULLY");
         console.log("================================================================");
         
         uint256 currentEpoch = vault.currentEpoch();
