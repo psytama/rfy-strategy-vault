@@ -18,6 +18,9 @@ contract RfyVaultFactory is Ownable, IRfyVaultFactory {
 	
 	/// @dev deployers mapping to track addresses allowed to create vaults
 	mapping(address => bool) public override deployers;
+	
+	/// @dev Array to store all created vault addresses
+	address[] public vaults;
 
 	/**
 	 * @dev Constructor that initializes the Ownable parent contract and sets the implementation address
@@ -40,11 +43,13 @@ contract RfyVaultFactory is Ownable, IRfyVaultFactory {
 	 * @dev Only callable by the contract owner
 	 * @param _tokenName The name for the vault token
 	 * @param _tokenSymbol The symbol for the vault token
+	 * @param _memeName The meme name for the vault token
 	 * @param _asset The address of the asset token to be used in the vault
 	 * @param _owner The address that will receive admin role
 	 * @param _trader The address that will receive trader role
 	 * @param _externalVault The address of the external vault to be used
 	 * @param _epochDuration The duration of epochs in seconds
+	 * @param _maxTotalDeposits The maximum total deposits allowed in the vault
 	 * @return The address of the newly created RfyVault
 	 */
 	function createVault(
@@ -65,6 +70,8 @@ contract RfyVaultFactory is Ownable, IRfyVaultFactory {
 			revert SVF_InvalidAddress();
 		}
 
+		if (_epochDuration <= 0) revert SVF_InvalidEpochDuration();
+
 		address newVault = Clones.clone(rfyVaultImplementation);
 
 		RfyVault(newVault).initialize(
@@ -79,7 +86,10 @@ contract RfyVaultFactory is Ownable, IRfyVaultFactory {
 			_maxTotalDeposits
 		);
 
-		emit VaultCreated(address(newVault), _asset, _externalVault);
+		// Store the vault in our registry
+		vaults.push(newVault);
+
+		emit VaultCreated(address(newVault), _asset, _externalVault, vaults.length - 1);
 
 		return address(newVault);
 	}

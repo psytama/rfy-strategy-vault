@@ -2,5 +2,12 @@
 	"cSpell.words": ["Rfy"],
 	"solidity.formatter": "prettier",
 	"solidity.compileUsingRemoteVersion": "v0.8.28+commit.7893614a",
-	"solidity.defaultCompiler": "remote"
+	"solidity.defaultCompiler": "remote",
+	"files.associations": {
+		".env*": "dotenv"
+	},
+	"github.copilot.enable": {
+		"*": true,
+		"dotenv": false
+	}
 }

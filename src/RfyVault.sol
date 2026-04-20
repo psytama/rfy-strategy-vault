@@ -85,6 +85,7 @@ contract RfyVault is
 		externalVault = IERC4626(_externalVault);
 		memeName = _memeName;
 		maxTotalDeposits = _maxTotalDeposits;
+		withdrawalsPaused = true;
 	}
 
 	/*//////////////////////////////////////////////////////////////
@@ -92,10 +93,19 @@ contract RfyVault is
     //////////////////////////////////////////////////////////////*/
 
 	/**
-	 * @notice Starts a new trading epoch
+	 * @notice Starts a new trading epoch with minimum deposit validation
 	 * @dev Only admin can start an epoch, and only when no epoch is active
+	 * @param minimumDeposits Minimum amount of deposits required to start the epoch
 	 */
-	function startNewEpoch() external override onlyRole(BOOTSTRAPPER_ROLE) {
+	function startNewEpoch(uint256 minimumDeposits) external override onlyRole(BOOTSTRAPPER_ROLE) {
+		_startNewEpoch(minimumDeposits);
+	}
+
+	/**
+	 * @notice Internal function to start a new trading epoch
+	 * @param minimumDeposits Minimum amount of deposits required to start the epoch (0 = no minimum)
+	 */
+	function _startNewEpoch(uint256 minimumDeposits) internal {
 		uint256 newEpochId = ++currentEpoch;
 		if (_epochs[newEpochId - 1].isEpochActive) {
 			revert SV_EpochActive();
@@ -105,6 +115,11 @@ contract RfyVault is
 
 		uint256 amountToDeposit = _totalAssets;
 		if (amountToDeposit == 0) revert SV_NoAvailableFunds();
+		
+		// Validate minimum deposits if specified
+		if (minimumDeposits > 0 && amountToDeposit < minimumDeposits) {
+			revert SV_InsufficientMinimumDeposits();
+		}
 
 		newEpoch.startTime = uint96(block.timestamp);
 		newEpoch.initialVaultAssets = amountToDeposit;
@@ -118,8 +133,11 @@ contract RfyVault is
 
 		// Deposit all available funds into external vault
 		if (address(externalVault) != address(0)) {
-			IERC20(asset()).approve(address(externalVault), amountToDeposit);
-			externalVault.deposit(amountToDeposit, address(this));
+			IERC20(asset()).forceApprove(address(externalVault), amountToDeposit);
+			uint256 sharesReceived = externalVault.deposit(amountToDeposit, address(this));
+    		if (sharesReceived == 0) revert SV_ZeroSharesReceived();
+			// Reset approval to 0 for security
+			IERC20(asset()).forceApprove(address(externalVault), 0);
 		}
 
 		newEpoch.initialExternalVaultDeposits = amountToDeposit;
@@ -139,14 +157,13 @@ contract RfyVault is
     //////////////////////////////////////////////////////////////*/
 
 	/**
-	 * @notice Allows trader to borrow funds during an active epoch
+	 * @notice Internal function to handle borrowing logic for both trader and admin
 	 * @param amount Amount to borrow
+	 * @return amountToTransfer The total amount that will be transferred
 	 */
-	function borrow(uint256 amount) external override onlyRole(TRADER_ROLE) {
-		if (amount == 0) revert SV_InvalidAmount();
+	function _processBorrow(uint256 amount) internal returns (uint256) {
 		EpochData storage epoch = _epochs[currentEpoch];
-		if (!epoch.isEpochActive) revert SV_EpochNotActive();
-
+		
 		uint256 unutilized = epoch.currentUnutilizedAsset;
 		uint256 availableExternalVaultShares = _getExternalVaultBalance();
 
@@ -175,21 +192,70 @@ contract RfyVault is
 				epoch.currentExternalVaultDeposits = 0;
 			} else {
 				if (address(externalVault) != address(0)) {
-					externalVault.withdraw(borrowing, address(this), address(this));
+					// Calculate shares needed for the borrowing amount
+					uint256 sharesToRedeem = externalVault.previewWithdraw(borrowing);
+					
+					// Calculate what we expect based on proportional share value
+					uint256 expectedAssetsForShares = externalVault.previewRedeem(sharesToRedeem);
+					
+					uint256 actualAssetsReceived = externalVault.redeem(sharesToRedeem, address(this), address(this));
+					
+					// Track any profit/loss from the external vault
+					int256 pnlDifference = int256(actualAssetsReceived) - int256(expectedAssetsForShares);
+					epoch.externalVaultPnl += pnlDifference;
+					
+					// Update borrowing to the actual amount received
+					borrowing = actualAssetsReceived;
+					
+					// Calculate the proportional deposit amount that was withdrawn
+					uint256 proportionalDeposit = (sharesToRedeem * epoch.currentExternalVaultDeposits) / availableExternalVaultShares;
+					epoch.currentExternalVaultDeposits -= proportionalDeposit;
 				}
-				epoch.currentExternalVaultDeposits -= borrowing;
 			}
 		}
 
-		uint256 amountToTransfer = utilizing + borrowing;
+		return utilizing + borrowing;
+	}
+
+	/**
+	 * @notice Allows trader to borrow funds during an active epoch
+	 * @param amount Amount to borrow
+	 * @return amountReceived The amount transferred to the trader
+	 */ 
+	function borrow(uint256 amount) external override onlyRole(TRADER_ROLE) returns (uint256) {
+		if (amount == 0) revert SV_InvalidAmount();
+		EpochData storage epoch = _epochs[currentEpoch];
+		if (!epoch.isEpochActive) revert SV_EpochNotActive();
+
+		uint256 amountToTransfer = _processBorrow(amount);
 
 		epoch.fundsBorrowed += amountToTransfer;
 		IERC20(asset()).safeTransfer(msg.sender, amountToTransfer);
 
 		emit FundsBorrowed(msg.sender, amountToTransfer);
+		
+		return amountToTransfer;
 	}
 
 	/**
+	 * @notice Allows admin to borrow funds during an active epoch
+	 * @param amount Amount to borrow
+	 * @return amountReceived The amount transferred to the admin
+	 */ 
+	function adminBorrow(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256) {
+		if (amount == 0) revert SV_InvalidAmount();
+		EpochData storage epoch = _epochs[currentEpoch];
+		if (!epoch.isEpochActive) revert SV_EpochNotActive();
+
+		uint256 amountToTransfer = _processBorrow(amount);
+
+		epoch.adminFundsBorrowed += amountToTransfer;
+		IERC20(asset()).safeTransfer(msg.sender, amountToTransfer);
+
+		emit AdminFundsBorrowed(msg.sender, amountToTransfer);
+		
+		return amountToTransfer;
+	}	/**
 	 * @notice Settles borrowed funds with PnL
 	 * @param pnl Profit (positive) or loss (negative)
 	 */
@@ -223,9 +289,9 @@ contract RfyVault is
 
 			realizedExternalVaultPnl += int256(assets_) - int256(epoch.currentExternalVaultDeposits);
 		}
-		int256 totalPnl = pnl + realizedExternalVaultPnl;
+		int256 totalPnl = pnl + realizedExternalVaultPnl + epoch.adminPnl;
 
-		// Update total assets based on PnL
+		// Update total assets based on PnL (including admin PnL)
 		uint256 finalVaultAssets = uint256(int256(epoch.initialVaultAssets) + totalPnl);
 		_totalAssets = finalVaultAssets;
 		// Update epoch final state
@@ -245,6 +311,36 @@ contract RfyVault is
 		emit FundsSettled(msg.sender, fundsBorrowed_, pnl);
 		emit EpochEnded(currentEpoch, block.timestamp);
 	}
+
+	/**
+	 * @notice Admin settles borrowed funds and calculates PnL without ending the epoch
+	 * @param amount Amount being returned by admin
+	 */
+	function adminSettle(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
+		EpochData storage epoch = _epochs[currentEpoch];
+		if (!epoch.isEpochActive) revert SV_EpochNotActive();
+
+		uint256 adminFundsBorrowed_ = epoch.adminFundsBorrowed;
+		if (adminFundsBorrowed_ == 0) revert SV_NoAvailableFunds(); // No funds borrowed by admin
+
+		// Transfer returned funds from admin
+		if (amount != 0) {
+			IERC20(asset()).safeTransferFrom(msg.sender, address(this), amount);
+		}
+
+		// Calculate admin PnL: returned amount minus borrowed amount
+		int256 adminPnl = int256(amount) - int256(adminFundsBorrowed_);
+		
+		// Update epoch admin PnL and reset borrowed amount
+		epoch.adminPnl += adminPnl;
+		epoch.adminFundsBorrowed = 0;
+
+		// Update total assets to reflect the net PnL effect
+		// Since we never subtracted the borrowed amount, we only add the PnL
+		_totalAssets = uint256(int256(_totalAssets) + adminPnl);
+
+		emit AdminFundsSettled(msg.sender, adminFundsBorrowed_, amount, adminPnl);
+	}
 	/*//////////////////////////////////////////////////////////////
                         CORE VAULT LOGIC
     //////////////////////////////////////////////////////////////*/
@@ -259,6 +355,7 @@ contract RfyVault is
 	) public override(ERC4626Upgradeable, IERC4626) nonReentrant returns (uint256) {
 		if (depositsPaused) revert SV_DepositsArePaused();
 		uint256 shares = super.deposit(assets, receiver);
+		if (shares == 0) revert SV_ZeroSharesReceived();
 		_totalAssets += assets;
 		return shares;
 	}
@@ -282,6 +379,7 @@ contract RfyVault is
 		if (depositsPaused) revert SV_DepositsArePaused();
 
 		uint256 actualAssets = super.mint(shares, receiver);
+		if (actualAssets == 0) revert SV_ZeroAssetsReceived();
 		_totalAssets += actualAssets;
 		return actualAssets;
 	}
@@ -408,14 +506,22 @@ contract RfyVault is
 
 		uint256 unutilized = epoch.currentUnutilizedAsset;
 		uint256 externalVaultDeposits = _getExternalVaultPreviewRedeem();
-		uint256 totalAvailable;
+		
+		return unutilized + externalVaultDeposits;
+	}
 
-		if (externalVaultDeposits > epoch.currentExternalVaultDeposits) {
-			totalAvailable = unutilized + externalVaultDeposits;
-		} else {
-			totalAvailable = unutilized + epoch.currentExternalVaultDeposits;
-		}
-		return totalAvailable;
+	/**
+	 * @notice Returns the maximum amount that can be borrowed by admin during an active epoch
+	 * @return The maximum amount that can be borrowed by admin
+	 */
+	function maxAdminBorrow() public view returns (uint256) {
+		EpochData memory epoch = _epochs[currentEpoch];
+		if (!epoch.isEpochActive) return 0;
+
+		uint256 unutilized = epoch.currentUnutilizedAsset;
+		uint256 externalVaultDeposits = _getExternalVaultPreviewRedeem();
+		
+		return unutilized + externalVaultDeposits;
 	}
 
 	/**
@@ -495,6 +601,24 @@ contract RfyVault is
 		depositsPaused = false;
 		withdrawalsPaused = false;
 		emit DepositWithdrawalUnpaused();
+	}
+
+	/**
+	 * @notice Allows admin to withdraw reward tokens from external vault integrations
+	 * @dev Cannot withdraw the main vault asset to prevent fund theft
+	 * @param token The reward token address to withdraw
+	 * @param to The address to send the reward tokens to
+	 */
+	function withdrawRewards(address token, address to) external onlyRole(DEFAULT_ADMIN_ROLE) {
+		if (token == asset()) revert SV_InvalidAddress(); // Prevent withdrawing main asset
+		if (to == address(0)) revert SV_InvalidAddress();
+		
+		uint256 balance = IERC20(token).balanceOf(address(this));
+		if (balance == 0) revert SV_NoAvailableFunds();
+		
+		IERC20(token).safeTransfer(to, balance);
+		
+		emit RewardsWithdrawn(token, to, balance);
 	}
 
 	function _authorizeUpgrade(address) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}

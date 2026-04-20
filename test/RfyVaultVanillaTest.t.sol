@@ -88,7 +88,7 @@ contract RfyVaultVanillaTest is Test {
 	function test_FirstEpochLoss() public {
 		// Start first epoch
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		// Trader borrows funds
 		uint256 borrowAmount = 4000e6; // 4000 USDC
@@ -114,7 +114,7 @@ contract RfyVaultVanillaTest is Test {
 	function test_FirstEpochLoss_AfterFewDays() public {
 		// Start first epoch
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		// Trader borrows funds
 		vm.warp(block.timestamp + 20 days + 1);
@@ -143,7 +143,7 @@ contract RfyVaultVanillaTest is Test {
 	function test_LossThenProfitExceedingLoss() public {
 		// First epoch with loss
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 3000e6;
 		vm.startPrank(trader);
@@ -158,7 +158,7 @@ contract RfyVaultVanillaTest is Test {
 
 		// Second epoch with profit
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(trader);
 		vault.borrow(borrowAmount);
@@ -180,7 +180,7 @@ contract RfyVaultVanillaTest is Test {
 	function test_LossThenInsufficientProfit() public {
 		// First epoch with loss
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 3000e6;
 		vm.startPrank(trader);
@@ -195,7 +195,7 @@ contract RfyVaultVanillaTest is Test {
 
 		// Second epoch with smaller profit
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(trader);
 		vault.borrow(borrowAmount);
@@ -219,7 +219,7 @@ contract RfyVaultVanillaTest is Test {
 	function test_TwoLossesThenProfitWithIntermediateWithdrawal() public {
 		// First epoch with loss
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 3000e6;
 		vm.startPrank(trader);
@@ -234,7 +234,7 @@ contract RfyVaultVanillaTest is Test {
 
 		// Second epoch with another loss
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(trader);
 		vault.borrow(borrowAmount);
@@ -253,7 +253,7 @@ contract RfyVaultVanillaTest is Test {
 
 		// Third epoch with profit
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(trader);
 		vault.borrow(borrowAmount - 1000e6); // Reduce borrow amount since one user withdrew
@@ -274,7 +274,7 @@ contract RfyVaultVanillaTest is Test {
 
 	function test_MaxLossScenario() public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 initialVaultAssets = 4000e6;
 		vm.startPrank(trader);

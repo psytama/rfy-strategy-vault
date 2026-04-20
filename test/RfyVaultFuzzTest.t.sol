@@ -31,7 +31,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 	function testFuzz_BorrowErrors(uint256 borrowAmount) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		// Test zero amount
 		if (borrowAmount == 0) {
@@ -47,7 +47,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 	function testFuzz_Borrow(uint256 borrowAmount) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		uint256 initialVaultAssets = vault.totalAssets();
 
 		IRfyVault.EpochData memory preEpochData = vault.getEpochData(vault.currentEpoch());
@@ -81,7 +81,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 	function testFuzz_Settle(int96 pnl) public {
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = vault.totalAssets() / 2;
 		vm.prank(trader);
@@ -158,7 +158,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		vm.stopPrank();
 
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		vm.startPrank(testUser);
 		vm.expectRevert(IRfyVault.SV_WithdrawalsArePaused.selector);
@@ -200,7 +200,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 		// Start epoch
 		vm.startPrank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 		uint256 preinitialVaultAssets = vault.totalAssets();
 
 		// Verify epoch started state
@@ -217,19 +217,19 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 
 		uint256 borrowAmount = amount / 2;
 		vm.startPrank(trader);
-		vault.borrow(borrowAmount);
+		uint256 actualBorrowedAmount = vault.borrow(borrowAmount);
 
 		IRfyVault.EpochData memory postBorrowEpochData = vault.getEpochData(vault.currentEpoch());
 
-		assertEq(postBorrowEpochData.fundsBorrowed, borrowAmount, "Borrowed amount not tracked");
+		assertEq(postBorrowEpochData.fundsBorrowed, actualBorrowedAmount, "Borrowed amount not tracked");
 		assertTrue(
 			postBorrowEpochData.currentExternalVaultDeposits < epochData.initialExternalVaultDeposits,
 			"External Vault deposits should decrease"
 		);
 
 		vm.warp(block.timestamp + vault.epochDuration() + 1);
-		deal(USDC, trader, borrowAmount);
-		usdc.approve(address(vault), borrowAmount);
+		deal(USDC, trader, actualBorrowedAmount);
+		usdc.approve(address(vault), actualBorrowedAmount);
 		vault.settle(0);
 
 		IRfyVault.EpochData memory finalEpochData = vault.getEpochData(vault.currentEpoch());
@@ -355,7 +355,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		vm.stopPrank();
 
 		vm.startPrank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		IRfyVault.EpochData memory initialEpochData = vault.getEpochData(vault.currentEpoch());
 
@@ -368,7 +368,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		vm.stopPrank();
 		vm.startPrank(trader);
 		uint256 borrowAmount = amount / 2;
-		vault.borrow(borrowAmount);
+		uint256 actualBorrowedAmount = vault.borrow(borrowAmount);
 
 		IRfyVault.EpochData memory postBorrowEpochData = vault.getEpochData(vault.currentEpoch());
 
@@ -379,8 +379,8 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		);
 
 		vm.warp(block.timestamp + vault.epochDuration() + 1);
-		deal(USDC, trader, borrowAmount);
-		usdc.approve(address(vault), borrowAmount);
+		deal(USDC, trader, actualBorrowedAmount);
+		usdc.approve(address(vault), actualBorrowedAmount);
 		vault.settle(0);
 
 		IRfyVault.EpochData memory finalEpochData = vault.getEpochData(vault.currentEpoch());
@@ -397,7 +397,7 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		lossPercentage = bound(lossPercentage, 0, 100);
 
 		vm.prank(admin);
-		vault.startNewEpoch();
+		vault.startNewEpoch(4e8);
 
 		uint256 borrowAmount = 4000e6;
 
@@ -501,5 +501,55 @@ contract RfyVaultFuzzTest is RfyVaultBase {
 		vm.expectRevert();
 		vault.mint(shares, testUser);
 		vm.stopPrank();
+	}
+
+	function testFuzz_ExternalVaultBorrowRange(uint256 borrowPercentage) public {
+		borrowPercentage = bound(borrowPercentage, 1, 100);
+
+		// Setup: Start with some deposits
+		uint256 initialDeposit = 1000e6; // 1000 USDC
+		address depositor = makeAddr("depositor");
+		deal(USDC, depositor, initialDeposit);
+
+		vm.startPrank(depositor);
+		usdc.approve(address(vault), initialDeposit);
+		vault.deposit(initialDeposit, depositor);
+		vm.stopPrank();
+
+		vm.prank(admin);
+		vault.startNewEpoch(4e8);
+
+		// Record initial external vault deposits
+		IRfyVault.EpochData memory initialEpochData = vault.getEpochData(vault.currentEpoch());
+		uint256 initialExternalVaultDeposits = initialEpochData.currentExternalVaultDeposits;
+
+		// Allow time for external vault to generate profits
+		vm.warp(block.timestamp + 30 days);
+
+		// Get the current available amount from external vault (includes profits)
+		uint256 maxWithdrawable = vault.externalVault().maxWithdraw(address(vault));
+		
+		if (maxWithdrawable == 0) return; // Skip if no funds available
+
+		// Verify that external vault generated profit (or at least maintained value)
+		assertGe(maxWithdrawable, initialExternalVaultDeposits, "External vault should maintain or increase value over time");
+
+		// Calculate and bound borrow amount as percentage of available funds (1% to 100%)
+		uint256 targetBorrowAmount = (maxWithdrawable * borrowPercentage) / 100;
+		uint256 borrowAmount = bound(targetBorrowAmount, 1, maxWithdrawable);
+		
+		if (borrowAmount == 0) return; // Skip if borrow amount is 0
+
+		vm.prank(trader);
+		uint256 actualBorrowedAmount = vault.borrow(borrowAmount);
+
+		// Should successfully borrow the exact amount requested (or very close due to rounding)
+		assertGt(actualBorrowedAmount, 0, "Should borrow some amount");
+		assertApproxEqAbs(actualBorrowedAmount, borrowAmount, 1, "Should borrow approximately the requested amount");
+		assertLe(actualBorrowedAmount, maxWithdrawable, "Should not borrow more than available");
+		
+		// Verify epoch state is consistent
+		IRfyVault.EpochData memory epochData = vault.getEpochData(vault.currentEpoch());
+		assertGe(epochData.fundsBorrowed, actualBorrowedAmount, "Funds borrowed should be tracked correctly");
 	}
 }
