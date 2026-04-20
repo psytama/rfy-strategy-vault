@@ -4,7 +4,6 @@ pragma solidity 0.8.28;
 import { Script, console } from "forge-std/Script.sol";
 import { IRfyVault } from "../src/interfaces/IRfyVault.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 /**
  * @title StartEpoch
@@ -19,21 +18,15 @@ import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/I
  *   MINIMUM_DEPOSITS - Minimum deposit amount required (optional, defaults to 0)
  */
 contract StartEpoch is Script {
-    // Default values
-    uint256 public constant DEFAULT_MINIMUM_DEPOSITS = 0; // No minimum by default
-    
-    // Botanix Vault Addresses
-    address public constant PBTC_VAULT = 0xB819B78798C174fA9e80aD26903EACb27c68CfD6;
-    address public constant STBTC_VAULT = 0x5107b03D9b4fB135A58435a4507716304372645b;
-    address public constant USDC_VAULT = 0x644C81Bac306A4dCAAeaFfe66B284E4F7B245227;
+    uint256 public constant DEFAULT_MINIMUM_DEPOSITS = 0;
     
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         uint256 minimumDeposits = DEFAULT_MINIMUM_DEPOSITS;
         
-        IRfyVault pbtcVault = IRfyVault(PBTC_VAULT);
-        IRfyVault stbtcVault = IRfyVault(STBTC_VAULT);
-        IRfyVault usdcVault = IRfyVault(USDC_VAULT);
+        IRfyVault pbtcVault = IRfyVault(vm.envAddress("PBTC_VAULT"));
+        IRfyVault stbtcVault = IRfyVault(vm.envAddress("STBTC_VAULT"));
+        IRfyVault usdcVault = IRfyVault(vm.envAddress("USDC_VAULT"));
         
         vm.startBroadcast(deployerPrivateKey);
         
@@ -55,73 +48,6 @@ contract StartEpoch is Script {
         _logEpochSummary(pbtcVault, "pBTC");
         _logEpochSummary(stbtcVault, "stBTC");
         _logEpochSummary(usdcVault, "USDC");
-    }
-    
-    function _performPreflightChecks(IRfyVault vault, uint256 minimumDeposits) internal view {
-        console.log("=== Pre-flight Checks ===");
-        
-        // Check vault exists and is valid
-        console.log("Vault Address:", address(vault));
-        console.log("Vault Name:", vault.name());
-        console.log("Vault Symbol:", vault.symbol());
-        
-        // Check current state
-        uint256 currentEpoch = vault.currentEpoch();
-        console.log("Current Epoch:", currentEpoch);
-        
-        // Check if previous epoch is active
-        if (currentEpoch > 0) {
-            IRfyVault.EpochData memory lastEpoch = vault.getEpochData(currentEpoch);
-            if (lastEpoch.isEpochActive) {
-                console.log("WARNING: Previous epoch is still active!");
-                console.log("- Epoch ID:", currentEpoch);
-                console.log("- Start Time:", lastEpoch.startTime);
-                console.log("- Is Settled:", lastEpoch.isSettled);
-                revert("Cannot start new epoch: previous epoch still active");
-            } else {
-                console.log("Previous epoch settled successfully");
-            }
-        }
-        
-        // Check vault assets
-        uint256 totalAssets = vault.totalAssets();
-        console.log("Total Assets:", totalAssets);
-        console.log("Minimum Required:", minimumDeposits);
-        
-        if (totalAssets == 0) {
-            revert("Cannot start epoch: vault has no assets");
-        }
-        
-        if (minimumDeposits > 0 && totalAssets < minimumDeposits) {
-            console.log("ERROR: Insufficient assets for minimum requirement");
-            revert("Insufficient assets for minimum deposits requirement");
-        }
-        
-        // Check pause status
-        bool depositsPaused = vault.depositsPaused();
-        bool withdrawalsPaused = vault.withdrawalsPaused();
-        console.log("Deposits Paused:", depositsPaused);
-        console.log("Withdrawals Paused:", withdrawalsPaused);
-        
-        // Check asset details
-        address asset = vault.asset();
-        console.log("Asset Address:", asset);
-        
-        // Try to get metadata if available
-        try IERC20Metadata(asset).name() returns (string memory name) {
-            console.log("Asset Name:", name);
-        } catch {
-            console.log("Asset Name: [Not available]");
-        }
-        
-        try IERC20Metadata(asset).symbol() returns (string memory symbol) {
-            console.log("Asset Symbol:", symbol);
-        } catch {
-            console.log("Asset Symbol: [Not available]");
-        }
-        
-        console.log("All pre-flight checks passed");
-        console.log("");
     }
     
     function _logEpochSummary(IRfyVault vault, string memory vaultName) internal view {

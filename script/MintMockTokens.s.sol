@@ -19,7 +19,7 @@ contract MintMockTokens is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
-        address tokenAddress = 0x2508FC3487c21f67F30eDeC94afB24fdF6735C76;
+        address tokenAddress = vm.envAddress("MOCK_TOKEN_ADDRESS");
         
         MockERC20 token = MockERC20(tokenAddress);
         uint8 decimals = token.decimals();

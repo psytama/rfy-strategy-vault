@@ -4,9 +4,6 @@ pragma solidity 0.8.28;
 import { Script, console } from "forge-std/Script.sol";
 import { RfyVault } from "../src/RfyVault.sol";
 import { RfyVaultFactory } from "../src/RfyVaultFactory.sol";
-import { MockERC20 } from "../src/mocks/MockERC20.sol";
-import { MockERC4626Vault } from "../src/mocks/MockERC4626Vault.sol";
-import { IERC20 } from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
 /**
  * @title DeployNewChain
@@ -25,8 +22,6 @@ contract DeployNewChain is Script {
     // Deployed contracts
     RfyVault public vaultImplementation;
     RfyVaultFactory public vaultFactory;
-    MockERC20 public mockBTC;
-    MockERC4626Vault public mockExternalVault;
     
     // Addresses
     address public deployer;
@@ -37,42 +32,16 @@ contract DeployNewChain is Script {
         
         vm.startBroadcast(deployerPrivateKey);
         
-        // Step 1: Deploy mock BTC token
-        // _deployMockBTC();
-        
-        // Step 2: Deploy mock external vault (ERC4626)
-        // _deployMockExternalVault();
-        
-        // Step 3: Deploy vault implementation
+        // Step 1: Deploy vault implementation
         _deployVaultImplementation();
         
-        // Step 4: Deploy vault factory
+        // Step 2: Deploy vault factory
         _deployVaultFactory();
         
         vm.stopBroadcast();
         
         // Log deployment summary
         _logDeploymentSummary();
-    }
-    
-    function _deployMockBTC() internal {
-        console.log("=== Deploying Mock BTC ===");
-        
-        // Deploy mock BTC with 8 decimals (like real BTC)
-        mockBTC = new MockERC20("Wrapped Bitcoin", "WBTC", 8);
-        console.log("Mock BTC deployed at:", address(mockBTC));
-    }
-    
-    function _deployMockExternalVault() internal {
-        console.log("\n=== Deploying Mock External Vault ===");
-        
-        // Deploy mock ERC4626 vault using mock BTC as underlying asset
-        mockExternalVault = new MockERC4626Vault(
-            IERC20(address(mockBTC)),
-            "Mock BTC Vault",
-            "mBTCv"
-        );
-        console.log("Mock External Vault deployed at:", address(mockExternalVault));
     }
     
     function _deployVaultImplementation() internal {
@@ -95,10 +64,6 @@ contract DeployNewChain is Script {
         console.log("\n================================================================");
         console.log("                    DEPLOYMENT SUMMARY");
         console.log("================================================================");
-        
-        console.log("\n=== TOKEN ADDRESSES ===");
-        console.log("Mock BTC (WBTC):", address(mockBTC));
-        // console.log("Mock External Vault:", address(mockExternalVault));
         
         console.log("\n=== VAULT ADDRESSES ===");
         console.log("Vault Implementation:", address(vaultImplementation));

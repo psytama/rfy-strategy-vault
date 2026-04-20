@@ -6,14 +6,11 @@ import { IRfyVaultFactory } from "../src/interfaces/IRfyVaultFactory.sol";
 import { IRfyVault } from "../src/interfaces/IRfyVault.sol";
 
 contract DeployNewVault is Script {
-	// address public constant ASSET_ADDRESS = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
-	// address public constant YEARN_VAULT = 0x6FAF8b7fFeE3306EfcFc2BA9Fec912b4d49834C1;
-
 	IRfyVault vault;
 
 	function run() external {
-		IRfyVaultFactory rfyVaultFactory = IRfyVaultFactory(0x51eCE283e41f2Bb9928746ACE0028ef77F30b3ba);
-		address assetAddress = 0xe9aBA835f813ca05E50A6C0ce65D0D74390F7dE7;
+		IRfyVaultFactory rfyVaultFactory = IRfyVaultFactory(vm.envAddress("VAULT_FACTORY"));
+		address assetAddress = vm.envAddress("ASSET_ADDRESS");
 		address yearnVault = vm.envAddress("YEARN_ADDRESS");
 		address trader = vm.envAddress("TRADER_ADDRESS");
 		uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");

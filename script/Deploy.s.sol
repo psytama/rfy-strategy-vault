@@ -81,9 +81,9 @@ contract DeployVaultWithExistingDex is Script {
         console.log("=== Loading Existing Contracts ===");
         
         // Load factory addresses from environment
-        vaultFactory = IRfyVaultFactory(0xa5Da915624043a779CDCF56A4381168154Af45fc);
-        dexFactory = CustomUniswapV2Factory(0x1CBba43925E08b6857ACaF3429181d0474a0743F);
-        dexRouter = CustomUniswapV2Router(payable(0xeDEB4781E8e10d1b707A865493a8F4c3550b1896));
+        vaultFactory = IRfyVaultFactory(vm.envAddress("VAULT_FACTORY"));
+        dexFactory = CustomUniswapV2Factory(vm.envAddress("DEX_FACTORY"));
+        dexRouter = CustomUniswapV2Router(payable(vm.envAddress("DEX_ROUTER")));
         
         // Load token addresses
         asset = IERC20(vm.envAddress("USDC_ADDRESS"));
@@ -224,8 +224,6 @@ contract DeployVaultWithExistingDex is Script {
         console.log("Vault Name:", vault.name());
         console.log("Vault Symbol:", vault.symbol());
         console.log("Asset:", address(vault.asset()));
-        // console.log("Admin:", vault.owner());
-        // console.log("Trader:", vault.trader());
         
         console.log("\n=== VAULT STATE ===");
         console.log("Total Assets:", vault.totalAssets());
