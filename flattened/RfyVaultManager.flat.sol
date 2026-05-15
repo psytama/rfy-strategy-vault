@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity =0.8.28 ^0.8.20 ^0.8.22;
+pragma solidity =0.8.28 ^0.8.20;
 
 // lib/openzeppelin-contracts/contracts/utils/Context.sol
 
@@ -29,154 +29,6 @@ abstract contract Context {
     }
 }
 
-// lib/openzeppelin-contracts/contracts/utils/Errors.sol
-
-// OpenZeppelin Contracts (last updated v5.1.0) (utils/Errors.sol)
-
-/**
- * @dev Collection of common custom errors used in multiple contracts
- *
- * IMPORTANT: Backwards compatibility is not guaranteed in future versions of the library.
- * It is recommended to avoid relying on the error API for critical functionality.
- *
- * _Available since v5.1._
- */
-library Errors {
-    /**
-     * @dev The ETH balance of the account is not enough to perform the operation.
-     */
-    error InsufficientBalance(uint256 balance, uint256 needed);
-
-    /**
-     * @dev A call to an address target failed. The target may have reverted.
-     */
-    error FailedCall();
-
-    /**
-     * @dev The deployment failed.
-     */
-    error FailedDeployment();
-
-    /**
-     * @dev A necessary precompile is missing.
-     */
-    error MissingPrecompile(address);
-}
-
-// lib/openzeppelin-contracts/contracts/access/IAccessControl.sol
-
-// OpenZeppelin Contracts (last updated v5.1.0) (access/IAccessControl.sol)
-
-/**
- * @dev External interface of AccessControl declared to support ERC-165 detection.
- */
-interface IAccessControl {
-    /**
-     * @dev The `account` is missing a role.
-     */
-    error AccessControlUnauthorizedAccount(address account, bytes32 neededRole);
-
-    /**
-     * @dev The caller of a function is not the expected one.
-     *
-     * NOTE: Don't confuse with {AccessControlUnauthorizedAccount}.
-     */
-    error AccessControlBadConfirmation();
-
-    /**
-     * @dev Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole`
-     *
-     * `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite
-     * {RoleAdminChanged} not being emitted signaling this.
-     */
-    event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);
-
-    /**
-     * @dev Emitted when `account` is granted `role`.
-     *
-     * `sender` is the account that originated the contract call. This account bears the admin role (for the granted role).
-     * Expected in cases where the role was granted using the internal {AccessControl-_grantRole}.
-     */
-    event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
-
-    /**
-     * @dev Emitted when `account` is revoked `role`.
-     *
-     * `sender` is the account that originated the contract call:
-     *   - if using `revokeRole`, it is the admin role bearer
-     *   - if using `renounceRole`, it is the role bearer (i.e. `account`)
-     */
-    event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
-
-    /**
-     * @dev Returns `true` if `account` has been granted `role`.
-     */
-    function hasRole(bytes32 role, address account) external view returns (bool);
-
-    /**
-     * @dev Returns the admin role that controls `role`. See {grantRole} and
-     * {revokeRole}.
-     *
-     * To change a role's admin, use {AccessControl-_setRoleAdmin}.
-     */
-    function getRoleAdmin(bytes32 role) external view returns (bytes32);
-
-    /**
-     * @dev Grants `role` to `account`.
-     *
-     * If `account` had not been already granted `role`, emits a {RoleGranted}
-     * event.
-     *
-     * Requirements:
-     *
-     * - the caller must have ``role``'s admin role.
-     */
-    function grantRole(bytes32 role, address account) external;
-
-    /**
-     * @dev Revokes `role` from `account`.
-     *
-     * If `account` had been granted `role`, emits a {RoleRevoked} event.
-     *
-     * Requirements:
-     *
-     * - the caller must have ``role``'s admin role.
-     */
-    function revokeRole(bytes32 role, address account) external;
-
-    /**
-     * @dev Revokes `role` from the calling account.
-     *
-     * Roles are often managed via {grantRole} and {revokeRole}: this function's
-     * purpose is to provide a mechanism for accounts to lose their privileges
-     * if they are compromised (such as when a trusted device is misplaced).
-     *
-     * If the calling account had been granted `role`, emits a {RoleRevoked}
-     * event.
-     *
-     * Requirements:
-     *
-     * - the caller must be `callerConfirmation`.
-     */
-    function renounceRole(bytes32 role, address callerConfirmation) external;
-}
-
-// lib/openzeppelin-contracts/contracts/proxy/beacon/IBeacon.sol
-
-// OpenZeppelin Contracts (last updated v5.0.0) (proxy/beacon/IBeacon.sol)
-
-/**
- * @dev This is the interface that {BeaconProxy} expects of its beacon.
- */
-interface IBeacon {
-    /**
-     * @dev Must return an address that can be used as a delegate call target.
-     *
-     * {UpgradeableBeacon} will check that this address is a contract.
-     */
-    function implementation() external view returns (address);
-}
-
 // lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol
 
 // OpenZeppelin Contracts (last updated v5.1.0) (utils/introspection/IERC165.sol)
@@ -200,30 +52,6 @@ interface IERC165 {
      * This function call must use less than 30 000 gas.
      */
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
-}
-
-// lib/openzeppelin-contracts/contracts/interfaces/IERC1967.sol
-
-// OpenZeppelin Contracts (last updated v5.0.0) (interfaces/IERC1967.sol)
-
-/**
- * @dev ERC-1967: Proxy Storage Slots. This interface contains the events defined in the ERC.
- */
-interface IERC1967 {
-    /**
-     * @dev Emitted when the implementation is upgraded.
-     */
-    event Upgraded(address indexed implementation);
-
-    /**
-     * @dev Emitted when the admin account has changed.
-     */
-    event AdminChanged(address previousAdmin, address newAdmin);
-
-    /**
-     * @dev Emitted when the beacon is changed.
-     */
-    event BeaconUpgraded(address indexed beacon);
 }
 
 // lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol
@@ -305,95 +133,252 @@ interface IERC20 {
     function transferFrom(address from, address to, uint256 value) external returns (bool);
 }
 
-// src/interfaces/IRfyVaultFactory.sol
+// src/interfaces/IRfyVaultManager.sol
 
-/**
- * @title IRfyVaultFactory
- * @dev Interface for the RfyVaultFactory contract
- * @author Shivansh
- * @notice Defines the interface for creating new RfyVault instances
- */
-interface IRfyVaultFactory {
-    /**
-     * @dev Emitted when a new RfyVault is created
-     * @param vaultAddress The address of the newly created RfyVault
-     * @param asset The address of the asset token used by the RfyVault
-     * @param externalVault The address of the external vault used by the RfyVault
-     * @param vaultIndex The index of the vault in the vaults array
-     */
-    event VaultCreated(
-        address indexed vaultAddress,
-        address asset,
-        address externalVault,
-        uint256 vaultIndex
-    );
-    
-    /**
-     * @dev Emitted when a deployer is updated
-     * @param _deployer The address of the deployer
-     * @param _status The status of the deployer (true if added, false if removed)
-     */
-    event DeployerUpdated(address indexed _deployer, bool _status);
+interface IRfyVaultManager {
+	/*//////////////////////////////////////////////////////////////
+                                STRUCTS
+    //////////////////////////////////////////////////////////////*/
 
-    /// @dev Error thrown when  address is invalid
-    error SVF_InvalidAddress();
+	/// @notice Tracks a batch of queued deposits for one vault within one round.
+	/// @dev Once processed, totalShares is set from the actual vault.deposit() return value.
+	///      If the vault's `maxDeposit` headroom was smaller than `totalAssets` at process
+	///      time, the unfilled portion is recorded in `refundAssets` and returned to users
+	///      pro-rata when they call `claimShares`.
+	struct DepositRound {
+		uint256 totalAssets; // sum of all assets queued in this round
+		uint256 totalShares; // vault shares received when the round was processed
+		uint256 refundAssets; // queued assets that did not fit under the vault cap
+		bool processed;
+	}
 
-    /// @dev Error thrown when external vault address is invalid
-    error SVF_InvalidExternalVaultAddress();
+	/// @notice Tracks a batch of queued withdrawal requests for one vault within one round.
+	/// @dev Once processed, totalAssets is set from the actual vault.redeem() return value.
+	struct WithdrawalRound {
+		uint256 totalShares; // sum of all vault shares queued in this round
+		uint256 totalAssets; // underlying assets received when the round was processed
+		bool processed;
+	}
 
-    /// @dev Error thrown when implementation address is invalid
-    error SVF_InvalidImplementationAddress();
-    
-    /// @dev Error thrown when implementation address is invalid
-    error SVF_NotDeployer();
+	/*//////////////////////////////////////////////////////////////
+                                ERRORS
+    //////////////////////////////////////////////////////////////*/
 
-    /// @dev Error thrown when epoch duration is invalid
-    error SVF_InvalidEpochDuration();
+	error VM_VaultNotRegistered();
+	error VM_VaultAlreadyRegistered();
+	error VM_InvalidAddress();
+	error VM_InvalidAmount();
+	error VM_RoundAlreadyProcessed();
+	error VM_RoundNotProcessed();
+	error VM_NothingToProcess();
+	error VM_DepositsArePaused();
+	error VM_WithdrawalsArePaused();
+	error VM_NothingToClaim();
+	error VM_InsufficientBalance();
+	error VM_InsufficientInternalBalance();
+	error VM_InsufficientInternalAssetBalance();
+	error VM_LengthMismatch();
+	error VM_EmptyInput();
 
-    /**
-     * @notice Creates a new RfyVault instance
-     * @dev Only callable by the contract owner
-     * @param _tokenName The name for the vault token
-     * @param _tokenSymbol The symbol for the vault token
-     * @param _asset The address of the asset token to be used in the vault
-     * @param _owner The address that will receive admin role
-     * @param _trader The address that will receive trader role
-     * @param _externalVault The address of the external vault to be used
-     * @param _epochDuration The duration of epochs in seconds
-     * @return The address of the newly created RfyVault
-     */
-    function createVault(
-        string calldata _tokenName,
-        string calldata _tokenSymbol,
-        string calldata _memeName,
-        address _asset,
-        address _owner,
-        address _trader,
-        address _externalVault,
-        uint256 _epochDuration,
-        uint256 _maxTotalDeposits
-    ) external returns (address);
+	/*//////////////////////////////////////////////////////////////
+                                EVENTS
+    //////////////////////////////////////////////////////////////*/
 
-    /**
-     * @notice Returns the address of the vault implementation used for cloning
-     * @return The address of the vault implementation contract
-     */
-    function rfyVaultImplementation() external view returns (address);
+	event VaultRegistered(address indexed vault);
+	event DepositQueued(address indexed vault, address indexed user, uint256 indexed round, uint256 assets);
+	event DepositCancelled(address indexed vault, address indexed user, uint256 indexed round, uint256 assets);
+	event WithdrawalQueued(address indexed vault, address indexed user, uint256 indexed round, uint256 shares);
+	event WithdrawalCancelled(address indexed vault, address indexed user, uint256 indexed round, uint256 shares);
+	event DepositsProcessed(address indexed vault, uint256 indexed round, uint256 totalAssets, uint256 totalShares);
+	event WithdrawalsProcessed(
+		address indexed vault,
+		uint256 indexed round,
+		uint256 totalShares,
+		uint256 totalAssets
+	);
+	event SharesClaimed(address indexed vault, address indexed user, uint256 indexed round, uint256 shares);
+	event AssetsClaimed(address indexed vault, address indexed user, uint256 indexed round, uint256 assets);
+	event SharesClaimedInternal(address indexed vault, address indexed user, uint256 indexed round, uint256 shares);
+	event InternalSharesWithdrawn(address indexed vault, address indexed user, uint256 amount);
+	event InternalSharesConsumed(address indexed vault, address indexed user, uint256 amount);
 
-    /**
-     * @notice Update a address as deployer
-     * @dev Only invokable by owner
-     * @param _deployer address of the deployer
-     * @param _status status of the deployer
-     */
-    function updateDeployer(address _deployer, bool _status) external;
+	event VaultDeposited(address indexed vault, address indexed user, uint256 assets, uint256 shares);
+	event VaultWithdrawn(address indexed vault, address indexed user, uint256 shares, uint256 assets);
+	event InternalAssetsWithdrawn(address indexed asset, address indexed user, uint256 amount);
+	event InternalAssetsConsumed(address indexed asset, address indexed user, uint256 amount);
+	event EmergencyWithdrawn(address indexed token, address indexed to, uint256 amount);
 
-    /**
-     * @notice Returns whether the addres is a deployer or not
-     * @param _deployer address of the deployer
-     * @return status where address is a deployewr
-     */
-    function deployers(address _deployer) external view returns (bool);
+	/*//////////////////////////////////////////////////////////////
+                              OWNER FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+	/// @notice Whitelist a vault so users can queue deposits/withdrawals against it.
+	/// @dev Only callable by the contract owner. Also pushed to the public `allVaults` array.
+	function registerVault(address vault) external;
+
+	/// @notice Emergency rescue. Transfers `amount` of `token` from this contract to `to`.
+	/// @dev Only callable by the contract owner. Bypasses all internal accounting.
+	function emergencyWithdraw(address token, address to, uint256 amount) external;
+
+	/// @notice Returns the address of the vault registered at index `i` in the public registry.
+	function allVaults(uint256 i) external view returns (address);
+
+	/// @notice Returns the total number of registered vaults.
+	function vaultsLength() external view returns (uint256);
+
+	/*//////////////////////////////////////////////////////////////
+                              USER FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+	/// @notice Queue underlying asset tokens for deposit into `vault`.
+	///         Tokens are pulled from msg.sender immediately and held in this contract.
+	///         Can be called while the vault's deposits are paused (during an active epoch).
+	/// @param vault  The RfyVault to deposit into
+	/// @param assets Amount of underlying asset tokens to queue
+	function queueDeposit(address vault, uint256 assets) external;
+
+	/// @notice Cancel a partial or full queued deposit from an unprocessed round.
+	/// @param vault  The RfyVault the deposit was queued against
+	/// @param round  The deposit round ID (must be the current open round)
+	/// @param amount Amount to cancel; must be <= user's queued amount for this round
+	function cancelDeposit(address vault, uint256 round, uint256 amount) external;
+
+	/// @notice Queue vault shares for batch withdrawal from `vault`.
+	///         Vault shares (the rfyXXX ERC20) are pulled from msg.sender immediately.
+	/// @param vault  The RfyVault to redeem shares from
+	/// @param shares Amount of vault shares to queue for withdrawal
+	function queueWithdrawal(address vault, uint256 shares) external;
+
+	/// @notice Cancel a partial or full queued withdrawal from an unprocessed round.
+	/// @param vault  The RfyVault the withdrawal was queued against
+	/// @param round  The withdrawal round ID
+	/// @param amount Amount of shares to cancel; must be <= user's queued shares for this round
+	function cancelWithdrawal(address vault, uint256 round, uint256 amount) external;
+
+	/*//////////////////////////////////////////////////////////////
+                       DIRECT (UNPAUSED) FLOW
+    //////////////////////////////////////////////////////////////*/
+
+	/// @notice Deposit `amount` of underlying asset directly into `vault` and credit the
+	///         received shares to the caller's internal share balance held in this contract.
+	///         The vault must currently have deposits unpaused.
+	function depositToVault(address vault, uint256 amount) external;
+
+	/// @notice Multi-vault variant of {depositToVault}. Each (vault[i], amount[i]) is processed
+	///         in sequence. Reverts if any vault is unregistered, paused, or the lengths mismatch.
+	function deposit(address[] calldata vaults, uint256[] calldata amounts) external;
+
+	/// @notice Redeem `shares` from `vault`. Shares are sourced from the caller's internal balance
+	///         first, then pulled from their wallet for any shortfall. The received underlying assets
+	///         are credited to the caller's internal asset balance (NOT transferred to wallet).
+	///         The vault must currently have withdrawals unpaused.
+	function withdrawFromVault(address vault, uint256 shares) external;
+
+	/// @notice Multi-vault variant of {withdrawFromVault}.
+	function withdraw(address[] calldata vaults, uint256[] calldata shares) external;
+
+	/// @notice Withdraw underlying asset tokens previously credited via direct withdraw / claim flows.
+	///         Internal-asset balance is keyed by asset token address (not vault).
+	function withdrawInternalAssets(address asset, uint256 amount) external;
+
+	/*//////////////////////////////////////////////////////////////
+                         TRUSTLESS PROCESSING
+    //////////////////////////////////////////////////////////////*/
+
+	/// @notice Deposit all queued assets for the current round into the vault.
+	///         Anyone can call this. Reverts if vault.depositsPaused() == true or nothing queued.
+	///         Advances the deposit round counter immediately.
+	/// @param vault The RfyVault to deposit into
+	function processDeposits(address vault) external;
+
+	/// @notice Redeem all queued vault shares for the current withdrawal round from the vault.
+	///         Anyone can call this. Reverts if vault.withdrawalsPaused() == true or nothing queued.
+	///         Advances the withdrawal round counter immediately.
+	/// @param vault The RfyVault to redeem from
+	function processWithdrawals(address vault) external;
+
+	/// @notice Loop over every registered vault and run {processDeposits} on each one that has
+	///         a non-empty current deposit round and is not paused. Vaults that are paused or
+	///         have nothing queued are silently skipped (no revert), so one stuck vault cannot
+	///         block the rest of the batch. Anyone can call this.
+	/// @return processed Number of vaults that were actually processed.
+	function processAllDeposits() external returns (uint256 processed);
+
+	/// @notice Loop over every registered vault and run {processWithdrawals} on each one that has
+	///         a non-empty current withdrawal round and is not paused. Vaults that are paused or
+	///         have nothing queued are silently skipped (no revert). Anyone can call this.
+	/// @return processed Number of vaults that were actually processed.
+	function processAllWithdrawals() external returns (uint256 processed);
+
+	/*//////////////////////////////////////////////////////////////
+                              CLAIM FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+	/// @notice Claim vault shares owed from a processed deposit round.
+	///         Pro-rata formula: userShares = userAssets * round.totalShares / round.totalAssets
+	/// @param vault The RfyVault the round belongs to
+	/// @param round The deposit round ID
+	function claimShares(address vault, uint256 round) external;
+
+	/// @notice Same pro-rata claim as {claimShares}, but credits the user's internal share
+	///         balance held inside this contract instead of transferring shares out.
+	///         Useful for users who plan to queue a withdrawal next epoch — keeping shares
+	///         here lets {queueWithdrawal} consume them without a fresh ERC20 transferFrom.
+	///         The pro-rata asset refund (if the vault cap was exceeded) is still sent to
+	///         the user's wallet because there is no internal-asset accounting path.
+	/// @param vault The RfyVault the round belongs to
+	/// @param round The deposit round ID
+	function claimSharesInternal(address vault, uint256 round) external;
+
+	/// @notice Withdraw vault shares previously credited via {claimSharesInternal} back to
+	///         the user's wallet. Reverts if the user does not hold at least `amount`.
+	/// @param vault  The RfyVault whose shares to withdraw
+	/// @param amount Amount of shares to transfer to msg.sender
+	function withdrawInternalShares(address vault, uint256 amount) external;
+
+	/// @notice Claim underlying assets owed from a processed withdrawal round.
+	///         Pro-rata formula: userAssets = userShares * round.totalAssets / round.totalShares
+	/// @param vault The RfyVault the round belongs to
+	/// @param round The withdrawal round ID
+	function claimAssets(address vault, uint256 round) external;
+
+	/*//////////////////////////////////////////////////////////////
+                               VIEW FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+	/// @notice Preview how many vault shares msg.sender / user can claim from a processed deposit round.
+	/// @return 0 if the round is not yet processed or user has nothing queued.
+	function getClaimableShares(address vault, address user, uint256 round) external view returns (uint256);
+
+	/// @notice Preview how many underlying assets msg.sender / user can claim from a processed withdrawal round.
+	/// @return 0 if the round is not yet processed or user has nothing queued.
+	function getClaimableAssets(address vault, address user, uint256 round) external view returns (uint256);
+
+	/// @notice Returns all processed deposit rounds where a user has unclaimed vault shares.
+	/// @return rounds          Array of round IDs with unclaimed shares
+	/// @return claimableShares Corresponding claimable share amounts
+	function getUnclaimedDepositRounds(
+		address vault,
+		address user
+	) external view returns (uint256[] memory rounds, uint256[] memory claimableShares);
+
+	/// @notice Returns all processed withdrawal rounds where a user has unclaimed assets.
+	/// @return rounds          Array of round IDs with unclaimed assets
+	/// @return claimableAssets Corresponding claimable asset amounts
+	function getUnclaimedWithdrawalRounds(
+		address vault,
+		address user
+	) external view returns (uint256[] memory rounds, uint256[] memory claimableAssets);
+
+	/// @notice Returns the user's pending (unprocessed) queued deposit for the current open round.
+	/// @return assets Amount of assets queued
+	/// @return round  Current deposit round ID
+	function getPendingDeposit(address vault, address user) external view returns (uint256 assets, uint256 round);
+
+	/// @notice Returns the user's pending (unprocessed) queued withdrawal for the current open round.
+	/// @return shares Amount of vault shares queued
+	/// @return round  Current withdrawal round ID
+	function getPendingWithdrawal(address vault, address user) external view returns (uint256 shares, uint256 round);
 }
 
 // lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol
@@ -688,6 +673,93 @@ library Panic {
             mstore(0x20, code)
             revert(0x1c, 0x24)
         }
+    }
+}
+
+// lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol
+
+// OpenZeppelin Contracts (last updated v5.1.0) (utils/ReentrancyGuard.sol)
+
+/**
+ * @dev Contract module that helps prevent reentrant calls to a function.
+ *
+ * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
+ * available, which can be applied to functions to make sure there are no nested
+ * (reentrant) calls to them.
+ *
+ * Note that because there is a single `nonReentrant` guard, functions marked as
+ * `nonReentrant` may not call one another. This can be worked around by making
+ * those functions `private`, and then adding `external` `nonReentrant` entry
+ * points to them.
+ *
+ * TIP: If EIP-1153 (transient storage) is available on the chain you're deploying at,
+ * consider using {ReentrancyGuardTransient} instead.
+ *
+ * TIP: If you would like to learn more about reentrancy and alternative ways
+ * to protect against it, check out our blog post
+ * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].
+ */
+abstract contract ReentrancyGuard {
+    // Booleans are more expensive than uint256 or any type that takes up a full
+    // word because each write operation emits an extra SLOAD to first read the
+    // slot's contents, replace the bits taken up by the boolean, and then write
+    // back. This is the compiler's defense against contract upgrades and
+    // pointer aliasing, and it cannot be disabled.
+
+    // The values being non-zero value makes deployment a bit more expensive,
+    // but in exchange the refund on every call to nonReentrant will be lower in
+    // amount. Since refunds are capped to a percentage of the total
+    // transaction's gas, it is best to keep them low in cases like this one, to
+    // increase the likelihood of the full refund coming into effect.
+    uint256 private constant NOT_ENTERED = 1;
+    uint256 private constant ENTERED = 2;
+
+    uint256 private _status;
+
+    /**
+     * @dev Unauthorized reentrant call.
+     */
+    error ReentrancyGuardReentrantCall();
+
+    constructor() {
+        _status = NOT_ENTERED;
+    }
+
+    /**
+     * @dev Prevents a contract from calling itself, directly or indirectly.
+     * Calling a `nonReentrant` function from another `nonReentrant`
+     * function is not supported. It is possible to prevent this from happening
+     * by making the `nonReentrant` function external, and making it call a
+     * `private` function that does the actual work.
+     */
+    modifier nonReentrant() {
+        _nonReentrantBefore();
+        _;
+        _nonReentrantAfter();
+    }
+
+    function _nonReentrantBefore() private {
+        // On the first call to nonReentrant, _status will be NOT_ENTERED
+        if (_status == ENTERED) {
+            revert ReentrancyGuardReentrantCall();
+        }
+
+        // Any calls to nonReentrant after this point will fail
+        _status = ENTERED;
+    }
+
+    function _nonReentrantAfter() private {
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _status = NOT_ENTERED;
+    }
+
+    /**
+     * @dev Returns true if the reentrancy guard is currently set to "entered", which indicates there is a
+     * `nonReentrant` function in the call stack.
+     */
+    function _reentrancyGuardEntered() internal view returns (bool) {
+        return _status == ENTERED;
     }
 }
 
@@ -1853,169 +1925,6 @@ library SafeCast {
     }
 }
 
-// lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol
-
-// OpenZeppelin Contracts (last updated v5.1.0) (utils/StorageSlot.sol)
-// This file was procedurally generated from scripts/generate/templates/StorageSlot.js.
-
-/**
- * @dev Library for reading and writing primitive types to specific storage slots.
- *
- * Storage slots are often used to avoid storage conflict when dealing with upgradeable contracts.
- * This library helps with reading and writing to such slots without the need for inline assembly.
- *
- * The functions in this library return Slot structs that contain a `value` member that can be used to read or write.
- *
- * Example usage to set ERC-1967 implementation slot:
- * ```solidity
- * contract ERC1967 {
- *     // Define the slot. Alternatively, use the SlotDerivation library to derive the slot.
- *     bytes32 internal constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
- *
- *     function _getImplementation() internal view returns (address) {
- *         return StorageSlot.getAddressSlot(_IMPLEMENTATION_SLOT).value;
- *     }
- *
- *     function _setImplementation(address newImplementation) internal {
- *         require(newImplementation.code.length > 0);
- *         StorageSlot.getAddressSlot(_IMPLEMENTATION_SLOT).value = newImplementation;
- *     }
- * }
- * ```
- *
- * TIP: Consider using this library along with {SlotDerivation}.
- */
-library StorageSlot {
-    struct AddressSlot {
-        address value;
-    }
-
-    struct BooleanSlot {
-        bool value;
-    }
-
-    struct Bytes32Slot {
-        bytes32 value;
-    }
-
-    struct Uint256Slot {
-        uint256 value;
-    }
-
-    struct Int256Slot {
-        int256 value;
-    }
-
-    struct StringSlot {
-        string value;
-    }
-
-    struct BytesSlot {
-        bytes value;
-    }
-
-    /**
-     * @dev Returns an `AddressSlot` with member `value` located at `slot`.
-     */
-    function getAddressSlot(bytes32 slot) internal pure returns (AddressSlot storage r) {
-        assembly ("memory-safe") {
-            r.slot := slot
-        }
-    }
-
-    /**
-     * @dev Returns a `BooleanSlot` with member `value` located at `slot`.
-     */
-    function getBooleanSlot(bytes32 slot) internal pure returns (BooleanSlot storage r) {
-        assembly ("memory-safe") {
-            r.slot := slot
-        }
-    }
-
-    /**
-     * @dev Returns a `Bytes32Slot` with member `value` located at `slot`.
-     */
-    function getBytes32Slot(bytes32 slot) internal pure returns (Bytes32Slot storage r) {
-        assembly ("memory-safe") {
-            r.slot := slot
-        }
-    }
-
-    /**
-     * @dev Returns a `Uint256Slot` with member `value` located at `slot`.
-     */
-    function getUint256Slot(bytes32 slot) internal pure returns (Uint256Slot storage r) {
-        assembly ("memory-safe") {
-            r.slot := slot
-        }
-    }
-
-    /**
-     * @dev Returns a `Int256Slot` with member `value` located at `slot`.
-     */
-    function getInt256Slot(bytes32 slot) internal pure returns (Int256Slot storage r) {
-        assembly ("memory-safe") {
-            r.slot := slot
-        }
-    }
-
-    /**
-     * @dev Returns a `StringSlot` with member `value` located at `slot`.
-     */
-    function getStringSlot(bytes32 slot) internal pure returns (StringSlot storage r) {
-        assembly ("memory-safe") {
-            r.slot := slot
-        }
-    }
-
-    /**
-     * @dev Returns an `StringSlot` representation of the string storage pointer `store`.
-     */
-    function getStringSlot(string storage store) internal pure returns (StringSlot storage r) {
-        assembly ("memory-safe") {
-            r.slot := store.slot
-        }
-    }
-
-    /**
-     * @dev Returns a `BytesSlot` with member `value` located at `slot`.
-     */
-    function getBytesSlot(bytes32 slot) internal pure returns (BytesSlot storage r) {
-        assembly ("memory-safe") {
-            r.slot := slot
-        }
-    }
-
-    /**
-     * @dev Returns an `BytesSlot` representation of the bytes storage pointer `store`.
-     */
-    function getBytesSlot(bytes storage store) internal pure returns (BytesSlot storage r) {
-        assembly ("memory-safe") {
-            r.slot := store.slot
-        }
-    }
-}
-
-// lib/openzeppelin-contracts/contracts/interfaces/draft-IERC1822.sol
-
-// OpenZeppelin Contracts (last updated v5.1.0) (interfaces/draft-IERC1822.sol)
-
-/**
- * @dev ERC-1822: Universal Upgradeable Proxy Standard (UUPS) documents a method for upgradeability through a simplified
- * proxy whose upgrades are fully controlled by the current implementation.
- */
-interface IERC1822Proxiable {
-    /**
-     * @dev Returns the storage slot that the proxiable contract assumes is being used to store the implementation
-     * address.
-     *
-     * IMPORTANT: A proxy pointing at a proxiable contract should not be considered proxiable itself, because this risks
-     * bricking a proxy that upgrades to it, by delegating to itself until out of gas. Thus it is critical that this
-     * function revert if invoked through a proxy.
-     */
-    function proxiableUUID() external view returns (bytes32);
-}
-
 // lib/openzeppelin-contracts/contracts/interfaces/draft-IERC6093.sol
 
 // OpenZeppelin Contracts (last updated v5.1.0) (interfaces/draft-IERC6093.sol)
@@ -2178,154 +2087,6 @@ interface IERC1155Errors {
     error ERC1155InvalidArrayLength(uint256 idsLength, uint256 valuesLength);
 }
 
-// lib/openzeppelin-contracts/contracts/utils/Address.sol
-
-// OpenZeppelin Contracts (last updated v5.2.0) (utils/Address.sol)
-
-/**
- * @dev Collection of functions related to the address type
- */
-library Address {
-    /**
-     * @dev There's no code at `target` (it is not a contract).
-     */
-    error AddressEmptyCode(address target);
-
-    /**
-     * @dev Replacement for Solidity's `transfer`: sends `amount` wei to
-     * `recipient`, forwarding all available gas and reverting on errors.
-     *
-     * https://eips.ethereum.org/EIPS/eip-1884[EIP1884] increases the gas cost
-     * of certain opcodes, possibly making contracts go over the 2300 gas limit
-     * imposed by `transfer`, making them unable to receive funds via
-     * `transfer`. {sendValue} removes this limitation.
-     *
-     * https://consensys.net/diligence/blog/2019/09/stop-using-soliditys-transfer-now/[Learn more].
-     *
-     * IMPORTANT: because control is transferred to `recipient`, care must be
-     * taken to not create reentrancy vulnerabilities. Consider using
-     * {ReentrancyGuard} or the
-     * https://solidity.readthedocs.io/en/v0.8.20/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
-     */
-    function sendValue(address payable recipient, uint256 amount) internal {
-        if (address(this).balance < amount) {
-            revert Errors.InsufficientBalance(address(this).balance, amount);
-        }
-
-        (bool success, bytes memory returndata) = recipient.call{value: amount}("");
-        if (!success) {
-            _revert(returndata);
-        }
-    }
-
-    /**
-     * @dev Performs a Solidity function call using a low level `call`. A
-     * plain `call` is an unsafe replacement for a function call: use this
-     * function instead.
-     *
-     * If `target` reverts with a revert reason or custom error, it is bubbled
-     * up by this function (like regular Solidity function calls). However, if
-     * the call reverted with no returned reason, this function reverts with a
-     * {Errors.FailedCall} error.
-     *
-     * Returns the raw returned data. To convert to the expected return value,
-     * use https://solidity.readthedocs.io/en/latest/units-and-global-variables.html?highlight=abi.decode#abi-encoding-and-decoding-functions[`abi.decode`].
-     *
-     * Requirements:
-     *
-     * - `target` must be a contract.
-     * - calling `target` with `data` must not revert.
-     */
-    function functionCall(address target, bytes memory data) internal returns (bytes memory) {
-        return functionCallWithValue(target, data, 0);
-    }
-
-    /**
-     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`],
-     * but also transferring `value` wei to `target`.
-     *
-     * Requirements:
-     *
-     * - the calling contract must have an ETH balance of at least `value`.
-     * - the called Solidity function must be `payable`.
-     */
-    function functionCallWithValue(address target, bytes memory data, uint256 value) internal returns (bytes memory) {
-        if (address(this).balance < value) {
-            revert Errors.InsufficientBalance(address(this).balance, value);
-        }
-        (bool success, bytes memory returndata) = target.call{value: value}(data);
-        return verifyCallResultFromTarget(target, success, returndata);
-    }
-
-    /**
-     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`],
-     * but performing a static call.
-     */
-    function functionStaticCall(address target, bytes memory data) internal view returns (bytes memory) {
-        (bool success, bytes memory returndata) = target.staticcall(data);
-        return verifyCallResultFromTarget(target, success, returndata);
-    }
-
-    /**
-     * @dev Same as {xref-Address-functionCall-address-bytes-}[`functionCall`],
-     * but performing a delegate call.
-     */
-    function functionDelegateCall(address target, bytes memory data) internal returns (bytes memory) {
-        (bool success, bytes memory returndata) = target.delegatecall(data);
-        return verifyCallResultFromTarget(target, success, returndata);
-    }
-
-    /**
-     * @dev Tool to verify that a low level call to smart-contract was successful, and reverts if the target
-     * was not a contract or bubbling up the revert reason (falling back to {Errors.FailedCall}) in case
-     * of an unsuccessful call.
-     */
-    function verifyCallResultFromTarget(
-        address target,
-        bool success,
-        bytes memory returndata
-    ) internal view returns (bytes memory) {
-        if (!success) {
-            _revert(returndata);
-        } else {
-            // only check if target is a contract if the call was successful and the return data is empty
-            // otherwise we already know that it was a contract
-            if (returndata.length == 0 && target.code.length == 0) {
-                revert AddressEmptyCode(target);
-            }
-            return returndata;
-        }
-    }
-
-    /**
-     * @dev Tool to verify that a low level call was successful, and reverts if it wasn't, either by bubbling the
-     * revert reason or with a default {Errors.FailedCall} error.
-     */
-    function verifyCallResult(bool success, bytes memory returndata) internal pure returns (bytes memory) {
-        if (!success) {
-            _revert(returndata);
-        } else {
-            return returndata;
-        }
-    }
-
-    /**
-     * @dev Reverts with returndata if present. Otherwise reverts with {Errors.FailedCall}.
-     */
-    function _revert(bytes memory returndata) private pure {
-        // Look for revert reason and bubble it up if present
-        if (returndata.length > 0) {
-            // The easiest way to bubble the revert reason is using memory via assembly
-            assembly ("memory-safe") {
-                let returndata_size := mload(returndata)
-                revert(add(32, returndata), returndata_size)
-            }
-        } else {
-            revert Errors.FailedCall();
-        }
-    }
-}
-
 // lib/openzeppelin-contracts-upgradeable/contracts/utils/ContextUpgradeable.sol
 
 // OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)
@@ -2356,96 +2117,6 @@ abstract contract ContextUpgradeable is Initializable {
 
     function _contextSuffixLength() internal view virtual returns (uint256) {
         return 0;
-    }
-}
-
-// lib/openzeppelin-contracts/contracts/utils/Create2.sol
-
-// OpenZeppelin Contracts (last updated v5.1.0) (utils/Create2.sol)
-
-/**
- * @dev Helper to make usage of the `CREATE2` EVM opcode easier and safer.
- * `CREATE2` can be used to compute in advance the address where a smart
- * contract will be deployed, which allows for interesting new mechanisms known
- * as 'counterfactual interactions'.
- *
- * See the https://eips.ethereum.org/EIPS/eip-1014#motivation[EIP] for more
- * information.
- */
-library Create2 {
-    /**
-     * @dev There's no code to deploy.
-     */
-    error Create2EmptyBytecode();
-
-    /**
-     * @dev Deploys a contract using `CREATE2`. The address where the contract
-     * will be deployed can be known in advance via {computeAddress}.
-     *
-     * The bytecode for a contract can be obtained from Solidity with
-     * `type(contractName).creationCode`.
-     *
-     * Requirements:
-     *
-     * - `bytecode` must not be empty.
-     * - `salt` must have not been used for `bytecode` already.
-     * - the factory must have a balance of at least `amount`.
-     * - if `amount` is non-zero, `bytecode` must have a `payable` constructor.
-     */
-    function deploy(uint256 amount, bytes32 salt, bytes memory bytecode) internal returns (address addr) {
-        if (address(this).balance < amount) {
-            revert Errors.InsufficientBalance(address(this).balance, amount);
-        }
-        if (bytecode.length == 0) {
-            revert Create2EmptyBytecode();
-        }
-        assembly ("memory-safe") {
-            addr := create2(amount, add(bytecode, 0x20), mload(bytecode), salt)
-            // if no address was created, and returndata is not empty, bubble revert
-            if and(iszero(addr), not(iszero(returndatasize()))) {
-                let p := mload(0x40)
-                returndatacopy(p, 0, returndatasize())
-                revert(p, returndatasize())
-            }
-        }
-        if (addr == address(0)) {
-            revert Errors.FailedDeployment();
-        }
-    }
-
-    /**
-     * @dev Returns the address where a contract will be stored if deployed via {deploy}. Any change in the
-     * `bytecodeHash` or `salt` will result in a new destination address.
-     */
-    function computeAddress(bytes32 salt, bytes32 bytecodeHash) internal view returns (address) {
-        return computeAddress(salt, bytecodeHash, address(this));
-    }
-
-    /**
-     * @dev Returns the address where a contract will be stored if deployed via {deploy} from a contract located at
-     * `deployer`. If `deployer` is this contract's address, returns the same value as {computeAddress}.
-     */
-    function computeAddress(bytes32 salt, bytes32 bytecodeHash, address deployer) internal pure returns (address addr) {
-        assembly ("memory-safe") {
-            let ptr := mload(0x40) // Get free memory pointer
-
-            // |                   | ↓ ptr ...  ↓ ptr + 0x0B (start) ...  ↓ ptr + 0x20 ...  ↓ ptr + 0x40 ...   |
-            // |-------------------|---------------------------------------------------------------------------|
-            // | bytecodeHash      |                                                        CCCCCCCCCCCCC...CC |
-            // | salt              |                                      BBBBBBBBBBBBB...BB                   |
-            // | deployer          | 000000...0000AAAAAAAAAAAAAAAAAAA...AA                                     |
-            // | 0xFF              |            FF                                                             |
-            // |-------------------|---------------------------------------------------------------------------|
-            // | memory            | 000000...00FFAAAAAAAAAAAAAAAAAAA...AABBBBBBBBBBBBB...BBCCCCCCCCCCCCC...CC |
-            // | keccak(start, 85) |            ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ |
-
-            mstore(add(ptr, 0x40), bytecodeHash)
-            mstore(add(ptr, 0x20), salt)
-            mstore(ptr, deployer) // Right-aligned with 12 preceding garbage bytes
-            let start := add(ptr, 0x0b) // The hashed data starts at the final garbage byte which we will set to 0xff
-            mstore8(start, 0xff)
-            addr := and(keccak256(start, 85), 0xffffffffffffffffffffffffffffffffffffffff)
-        }
     }
 }
 
@@ -2576,402 +2247,6 @@ abstract contract Ownable is Context {
         address oldOwner = _owner;
         _owner = newOwner;
         emit OwnershipTransferred(oldOwner, newOwner);
-    }
-}
-
-// lib/openzeppelin-contracts-upgradeable/contracts/utils/ReentrancyGuardUpgradeable.sol
-
-// OpenZeppelin Contracts (last updated v5.1.0) (utils/ReentrancyGuard.sol)
-
-/**
- * @dev Contract module that helps prevent reentrant calls to a function.
- *
- * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
- * available, which can be applied to functions to make sure there are no nested
- * (reentrant) calls to them.
- *
- * Note that because there is a single `nonReentrant` guard, functions marked as
- * `nonReentrant` may not call one another. This can be worked around by making
- * those functions `private`, and then adding `external` `nonReentrant` entry
- * points to them.
- *
- * TIP: If EIP-1153 (transient storage) is available on the chain you're deploying at,
- * consider using {ReentrancyGuardTransient} instead.
- *
- * TIP: If you would like to learn more about reentrancy and alternative ways
- * to protect against it, check out our blog post
- * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].
- */
-abstract contract ReentrancyGuardUpgradeable is Initializable {
-    // Booleans are more expensive than uint256 or any type that takes up a full
-    // word because each write operation emits an extra SLOAD to first read the
-    // slot's contents, replace the bits taken up by the boolean, and then write
-    // back. This is the compiler's defense against contract upgrades and
-    // pointer aliasing, and it cannot be disabled.
-
-    // The values being non-zero value makes deployment a bit more expensive,
-    // but in exchange the refund on every call to nonReentrant will be lower in
-    // amount. Since refunds are capped to a percentage of the total
-    // transaction's gas, it is best to keep them low in cases like this one, to
-    // increase the likelihood of the full refund coming into effect.
-    uint256 private constant NOT_ENTERED = 1;
-    uint256 private constant ENTERED = 2;
-
-    /// @custom:storage-location erc7201:openzeppelin.storage.ReentrancyGuard
-    struct ReentrancyGuardStorage {
-        uint256 _status;
-    }
-
-    // keccak256(abi.encode(uint256(keccak256("openzeppelin.storage.ReentrancyGuard")) - 1)) & ~bytes32(uint256(0xff))
-    bytes32 private constant ReentrancyGuardStorageLocation = 0x9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f00;
-
-    function _getReentrancyGuardStorage() private pure returns (ReentrancyGuardStorage storage $) {
-        assembly {
-            $.slot := ReentrancyGuardStorageLocation
-        }
-    }
-
-    /**
-     * @dev Unauthorized reentrant call.
-     */
-    error ReentrancyGuardReentrantCall();
-
-    function __ReentrancyGuard_init() internal onlyInitializing {
-        __ReentrancyGuard_init_unchained();
-    }
-
-    function __ReentrancyGuard_init_unchained() internal onlyInitializing {
-        ReentrancyGuardStorage storage $ = _getReentrancyGuardStorage();
-        $._status = NOT_ENTERED;
-    }
-
-    /**
-     * @dev Prevents a contract from calling itself, directly or indirectly.
-     * Calling a `nonReentrant` function from another `nonReentrant`
-     * function is not supported. It is possible to prevent this from happening
-     * by making the `nonReentrant` function external, and making it call a
-     * `private` function that does the actual work.
-     */
-    modifier nonReentrant() {
-        _nonReentrantBefore();
-        _;
-        _nonReentrantAfter();
-    }
-
-    function _nonReentrantBefore() private {
-        ReentrancyGuardStorage storage $ = _getReentrancyGuardStorage();
-        // On the first call to nonReentrant, _status will be NOT_ENTERED
-        if ($._status == ENTERED) {
-            revert ReentrancyGuardReentrantCall();
-        }
-
-        // Any calls to nonReentrant after this point will fail
-        $._status = ENTERED;
-    }
-
-    function _nonReentrantAfter() private {
-        ReentrancyGuardStorage storage $ = _getReentrancyGuardStorage();
-        // By storing the original value once again, a refund is triggered (see
-        // https://eips.ethereum.org/EIPS/eip-2200)
-        $._status = NOT_ENTERED;
-    }
-
-    /**
-     * @dev Returns true if the reentrancy guard is currently set to "entered", which indicates there is a
-     * `nonReentrant` function in the call stack.
-     */
-    function _reentrancyGuardEntered() internal view returns (bool) {
-        ReentrancyGuardStorage storage $ = _getReentrancyGuardStorage();
-        return $._status == ENTERED;
-    }
-}
-
-// lib/openzeppelin-contracts/contracts/proxy/Clones.sol
-
-// OpenZeppelin Contracts (last updated v5.2.0) (proxy/Clones.sol)
-
-/**
- * @dev https://eips.ethereum.org/EIPS/eip-1167[ERC-1167] is a standard for
- * deploying minimal proxy contracts, also known as "clones".
- *
- * > To simply and cheaply clone contract functionality in an immutable way, this standard specifies
- * > a minimal bytecode implementation that delegates all calls to a known, fixed address.
- *
- * The library includes functions to deploy a proxy using either `create` (traditional deployment) or `create2`
- * (salted deterministic deployment). It also includes functions to predict the addresses of clones deployed using the
- * deterministic method.
- */
-library Clones {
-    error CloneArgumentsTooLong();
-
-    /**
-     * @dev Deploys and returns the address of a clone that mimics the behaviour of `implementation`.
-     *
-     * This function uses the create opcode, which should never revert.
-     */
-    function clone(address implementation) internal returns (address instance) {
-        return clone(implementation, 0);
-    }
-
-    /**
-     * @dev Same as {xref-Clones-clone-address-}[clone], but with a `value` parameter to send native currency
-     * to the new contract.
-     *
-     * NOTE: Using a non-zero value at creation will require the contract using this function (e.g. a factory)
-     * to always have enough balance for new deployments. Consider exposing this function under a payable method.
-     */
-    function clone(address implementation, uint256 value) internal returns (address instance) {
-        if (address(this).balance < value) {
-            revert Errors.InsufficientBalance(address(this).balance, value);
-        }
-        assembly ("memory-safe") {
-            // Cleans the upper 96 bits of the `implementation` word, then packs the first 3 bytes
-            // of the `implementation` address with the bytecode before the address.
-            mstore(0x00, or(shr(0xe8, shl(0x60, implementation)), 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000))
-            // Packs the remaining 17 bytes of `implementation` with the bytecode after the address.
-            mstore(0x20, or(shl(0x78, implementation), 0x5af43d82803e903d91602b57fd5bf3))
-            instance := create(value, 0x09, 0x37)
-        }
-        if (instance == address(0)) {
-            revert Errors.FailedDeployment();
-        }
-    }
-
-    /**
-     * @dev Deploys and returns the address of a clone that mimics the behaviour of `implementation`.
-     *
-     * This function uses the create2 opcode and a `salt` to deterministically deploy
-     * the clone. Using the same `implementation` and `salt` multiple times will revert, since
-     * the clones cannot be deployed twice at the same address.
-     */
-    function cloneDeterministic(address implementation, bytes32 salt) internal returns (address instance) {
-        return cloneDeterministic(implementation, salt, 0);
-    }
-
-    /**
-     * @dev Same as {xref-Clones-cloneDeterministic-address-bytes32-}[cloneDeterministic], but with
-     * a `value` parameter to send native currency to the new contract.
-     *
-     * NOTE: Using a non-zero value at creation will require the contract using this function (e.g. a factory)
-     * to always have enough balance for new deployments. Consider exposing this function under a payable method.
-     */
-    function cloneDeterministic(
-        address implementation,
-        bytes32 salt,
-        uint256 value
-    ) internal returns (address instance) {
-        if (address(this).balance < value) {
-            revert Errors.InsufficientBalance(address(this).balance, value);
-        }
-        assembly ("memory-safe") {
-            // Cleans the upper 96 bits of the `implementation` word, then packs the first 3 bytes
-            // of the `implementation` address with the bytecode before the address.
-            mstore(0x00, or(shr(0xe8, shl(0x60, implementation)), 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000))
-            // Packs the remaining 17 bytes of `implementation` with the bytecode after the address.
-            mstore(0x20, or(shl(0x78, implementation), 0x5af43d82803e903d91602b57fd5bf3))
-            instance := create2(value, 0x09, 0x37, salt)
-        }
-        if (instance == address(0)) {
-            revert Errors.FailedDeployment();
-        }
-    }
-
-    /**
-     * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.
-     */
-    function predictDeterministicAddress(
-        address implementation,
-        bytes32 salt,
-        address deployer
-    ) internal pure returns (address predicted) {
-        assembly ("memory-safe") {
-            let ptr := mload(0x40)
-            mstore(add(ptr, 0x38), deployer)
-            mstore(add(ptr, 0x24), 0x5af43d82803e903d91602b57fd5bf3ff)
-            mstore(add(ptr, 0x14), implementation)
-            mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73)
-            mstore(add(ptr, 0x58), salt)
-            mstore(add(ptr, 0x78), keccak256(add(ptr, 0x0c), 0x37))
-            predicted := and(keccak256(add(ptr, 0x43), 0x55), 0xffffffffffffffffffffffffffffffffffffffff)
-        }
-    }
-
-    /**
-     * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.
-     */
-    function predictDeterministicAddress(
-        address implementation,
-        bytes32 salt
-    ) internal view returns (address predicted) {
-        return predictDeterministicAddress(implementation, salt, address(this));
-    }
-
-    /**
-     * @dev Deploys and returns the address of a clone that mimics the behavior of `implementation` with custom
-     * immutable arguments. These are provided through `args` and cannot be changed after deployment. To
-     * access the arguments within the implementation, use {fetchCloneArgs}.
-     *
-     * This function uses the create opcode, which should never revert.
-     */
-    function cloneWithImmutableArgs(address implementation, bytes memory args) internal returns (address instance) {
-        return cloneWithImmutableArgs(implementation, args, 0);
-    }
-
-    /**
-     * @dev Same as {xref-Clones-cloneWithImmutableArgs-address-bytes-}[cloneWithImmutableArgs], but with a `value`
-     * parameter to send native currency to the new contract.
-     *
-     * NOTE: Using a non-zero value at creation will require the contract using this function (e.g. a factory)
-     * to always have enough balance for new deployments. Consider exposing this function under a payable method.
-     */
-    function cloneWithImmutableArgs(
-        address implementation,
-        bytes memory args,
-        uint256 value
-    ) internal returns (address instance) {
-        if (address(this).balance < value) {
-            revert Errors.InsufficientBalance(address(this).balance, value);
-        }
-        bytes memory bytecode = _cloneCodeWithImmutableArgs(implementation, args);
-        assembly ("memory-safe") {
-            instance := create(value, add(bytecode, 0x20), mload(bytecode))
-        }
-        if (instance == address(0)) {
-            revert Errors.FailedDeployment();
-        }
-    }
-
-    /**
-     * @dev Deploys and returns the address of a clone that mimics the behaviour of `implementation` with custom
-     * immutable arguments. These are provided through `args` and cannot be changed after deployment. To
-     * access the arguments within the implementation, use {fetchCloneArgs}.
-     *
-     * This function uses the create2 opcode and a `salt` to deterministically deploy the clone. Using the same
-     * `implementation`, `args` and `salt` multiple times will revert, since the clones cannot be deployed twice
-     * at the same address.
-     */
-    function cloneDeterministicWithImmutableArgs(
-        address implementation,
-        bytes memory args,
-        bytes32 salt
-    ) internal returns (address instance) {
-        return cloneDeterministicWithImmutableArgs(implementation, args, salt, 0);
-    }
-
-    /**
-     * @dev Same as {xref-Clones-cloneDeterministicWithImmutableArgs-address-bytes-bytes32-}[cloneDeterministicWithImmutableArgs],
-     * but with a `value` parameter to send native currency to the new contract.
-     *
-     * NOTE: Using a non-zero value at creation will require the contract using this function (e.g. a factory)
-     * to always have enough balance for new deployments. Consider exposing this function under a payable method.
-     */
-    function cloneDeterministicWithImmutableArgs(
-        address implementation,
-        bytes memory args,
-        bytes32 salt,
-        uint256 value
-    ) internal returns (address instance) {
-        bytes memory bytecode = _cloneCodeWithImmutableArgs(implementation, args);
-        return Create2.deploy(value, salt, bytecode);
-    }
-
-    /**
-     * @dev Computes the address of a clone deployed using {Clones-cloneDeterministicWithImmutableArgs}.
-     */
-    function predictDeterministicAddressWithImmutableArgs(
-        address implementation,
-        bytes memory args,
-        bytes32 salt,
-        address deployer
-    ) internal pure returns (address predicted) {
-        bytes memory bytecode = _cloneCodeWithImmutableArgs(implementation, args);
-        return Create2.computeAddress(salt, keccak256(bytecode), deployer);
-    }
-
-    /**
-     * @dev Computes the address of a clone deployed using {Clones-cloneDeterministicWithImmutableArgs}.
-     */
-    function predictDeterministicAddressWithImmutableArgs(
-        address implementation,
-        bytes memory args,
-        bytes32 salt
-    ) internal view returns (address predicted) {
-        return predictDeterministicAddressWithImmutableArgs(implementation, args, salt, address(this));
-    }
-
-    /**
-     * @dev Get the immutable args attached to a clone.
-     *
-     * - If `instance` is a clone that was deployed using `clone` or `cloneDeterministic`, this
-     *   function will return an empty array.
-     * - If `instance` is a clone that was deployed using `cloneWithImmutableArgs` or
-     *   `cloneDeterministicWithImmutableArgs`, this function will return the args array used at
-     *   creation.
-     * - If `instance` is NOT a clone deployed using this library, the behavior is undefined. This
-     *   function should only be used to check addresses that are known to be clones.
-     */
-    function fetchCloneArgs(address instance) internal view returns (bytes memory) {
-        bytes memory result = new bytes(instance.code.length - 45); // revert if length is too short
-        assembly ("memory-safe") {
-            extcodecopy(instance, add(result, 32), 45, mload(result))
-        }
-        return result;
-    }
-
-    /**
-     * @dev Helper that prepares the initcode of the proxy with immutable args.
-     *
-     * An assembly variant of this function requires copying the `args` array, which can be efficiently done using
-     * `mcopy`. Unfortunately, that opcode is not available before cancun. A pure solidity implementation using
-     * abi.encodePacked is more expensive but also more portable and easier to review.
-     *
-     * NOTE: https://eips.ethereum.org/EIPS/eip-170[EIP-170] limits the length of the contract code to 24576 bytes.
-     * With the proxy code taking 45 bytes, that limits the length of the immutable args to 24531 bytes.
-     */
-    function _cloneCodeWithImmutableArgs(
-        address implementation,
-        bytes memory args
-    ) private pure returns (bytes memory) {
-        if (args.length > 24531) revert CloneArgumentsTooLong();
-        return
-            abi.encodePacked(
-                hex"61",
-                uint16(args.length + 45),
-                hex"3d81600a3d39f3363d3d373d3d3d363d73",
-                implementation,
-                hex"5af43d82803e903d91602b57fd5bf3",
-                args
-            );
-    }
-}
-
-// lib/openzeppelin-contracts-upgradeable/contracts/utils/introspection/ERC165Upgradeable.sol
-
-// OpenZeppelin Contracts (last updated v5.1.0) (utils/introspection/ERC165.sol)
-
-/**
- * @dev Implementation of the {IERC165} interface.
- *
- * Contracts that want to implement ERC-165 should inherit from this contract and override {supportsInterface} to check
- * for the additional interface id that will be supported. For example:
- *
- * ```solidity
- * function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
- *     return interfaceId == type(MyInterface).interfaceId || super.supportsInterface(interfaceId);
- * }
- * ```
- */
-abstract contract ERC165Upgradeable is Initializable, IERC165 {
-    function __ERC165_init() internal onlyInitializing {
-    }
-
-    function __ERC165_init_unchained() internal onlyInitializing {
-    }
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId) public view virtual returns (bool) {
-        return interfaceId == type(IERC165).interfaceId;
     }
 }
 
@@ -4031,405 +3306,6 @@ interface IERC1363 is IERC20, IERC165 {
     function approveAndCall(address spender, uint256 value, bytes calldata data) external returns (bool);
 }
 
-// lib/openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol
-
-// OpenZeppelin Contracts (last updated v5.0.0) (access/AccessControl.sol)
-
-/**
- * @dev Contract module that allows children to implement role-based access
- * control mechanisms. This is a lightweight version that doesn't allow enumerating role
- * members except through off-chain means by accessing the contract event logs. Some
- * applications may benefit from on-chain enumerability, for those cases see
- * {AccessControlEnumerable}.
- *
- * Roles are referred to by their `bytes32` identifier. These should be exposed
- * in the external API and be unique. The best way to achieve this is by
- * using `public constant` hash digests:
- *
- * ```solidity
- * bytes32 public constant MY_ROLE = keccak256("MY_ROLE");
- * ```
- *
- * Roles can be used to represent a set of permissions. To restrict access to a
- * function call, use {hasRole}:
- *
- * ```solidity
- * function foo() public {
- *     require(hasRole(MY_ROLE, msg.sender));
- *     ...
- * }
- * ```
- *
- * Roles can be granted and revoked dynamically via the {grantRole} and
- * {revokeRole} functions. Each role has an associated admin role, and only
- * accounts that have a role's admin role can call {grantRole} and {revokeRole}.
- *
- * By default, the admin role for all roles is `DEFAULT_ADMIN_ROLE`, which means
- * that only accounts with this role will be able to grant or revoke other
- * roles. More complex role relationships can be created by using
- * {_setRoleAdmin}.
- *
- * WARNING: The `DEFAULT_ADMIN_ROLE` is also its own admin: it has permission to
- * grant and revoke this role. Extra precautions should be taken to secure
- * accounts that have been granted it. We recommend using {AccessControlDefaultAdminRules}
- * to enforce additional security measures for this role.
- */
-abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable, IAccessControl, ERC165Upgradeable {
-    struct RoleData {
-        mapping(address account => bool) hasRole;
-        bytes32 adminRole;
-    }
-
-    bytes32 public constant DEFAULT_ADMIN_ROLE = 0x00;
-
-    /// @custom:storage-location erc7201:openzeppelin.storage.AccessControl
-    struct AccessControlStorage {
-        mapping(bytes32 role => RoleData) _roles;
-    }
-
-    // keccak256(abi.encode(uint256(keccak256("openzeppelin.storage.AccessControl")) - 1)) & ~bytes32(uint256(0xff))
-    bytes32 private constant AccessControlStorageLocation = 0x02dd7bc7dec4dceedda775e58dd541e08a116c6c53815c0bd028192f7b626800;
-
-    function _getAccessControlStorage() private pure returns (AccessControlStorage storage $) {
-        assembly {
-            $.slot := AccessControlStorageLocation
-        }
-    }
-
-    /**
-     * @dev Modifier that checks that an account has a specific role. Reverts
-     * with an {AccessControlUnauthorizedAccount} error including the required role.
-     */
-    modifier onlyRole(bytes32 role) {
-        _checkRole(role);
-        _;
-    }
-
-    function __AccessControl_init() internal onlyInitializing {
-    }
-
-    function __AccessControl_init_unchained() internal onlyInitializing {
-    }
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControl).interfaceId || super.supportsInterface(interfaceId);
-    }
-
-    /**
-     * @dev Returns `true` if `account` has been granted `role`.
-     */
-    function hasRole(bytes32 role, address account) public view virtual returns (bool) {
-        AccessControlStorage storage $ = _getAccessControlStorage();
-        return $._roles[role].hasRole[account];
-    }
-
-    /**
-     * @dev Reverts with an {AccessControlUnauthorizedAccount} error if `_msgSender()`
-     * is missing `role`. Overriding this function changes the behavior of the {onlyRole} modifier.
-     */
-    function _checkRole(bytes32 role) internal view virtual {
-        _checkRole(role, _msgSender());
-    }
-
-    /**
-     * @dev Reverts with an {AccessControlUnauthorizedAccount} error if `account`
-     * is missing `role`.
-     */
-    function _checkRole(bytes32 role, address account) internal view virtual {
-        if (!hasRole(role, account)) {
-            revert AccessControlUnauthorizedAccount(account, role);
-        }
-    }
-
-    /**
-     * @dev Returns the admin role that controls `role`. See {grantRole} and
-     * {revokeRole}.
-     *
-     * To change a role's admin, use {_setRoleAdmin}.
-     */
-    function getRoleAdmin(bytes32 role) public view virtual returns (bytes32) {
-        AccessControlStorage storage $ = _getAccessControlStorage();
-        return $._roles[role].adminRole;
-    }
-
-    /**
-     * @dev Grants `role` to `account`.
-     *
-     * If `account` had not been already granted `role`, emits a {RoleGranted}
-     * event.
-     *
-     * Requirements:
-     *
-     * - the caller must have ``role``'s admin role.
-     *
-     * May emit a {RoleGranted} event.
-     */
-    function grantRole(bytes32 role, address account) public virtual onlyRole(getRoleAdmin(role)) {
-        _grantRole(role, account);
-    }
-
-    /**
-     * @dev Revokes `role` from `account`.
-     *
-     * If `account` had been granted `role`, emits a {RoleRevoked} event.
-     *
-     * Requirements:
-     *
-     * - the caller must have ``role``'s admin role.
-     *
-     * May emit a {RoleRevoked} event.
-     */
-    function revokeRole(bytes32 role, address account) public virtual onlyRole(getRoleAdmin(role)) {
-        _revokeRole(role, account);
-    }
-
-    /**
-     * @dev Revokes `role` from the calling account.
-     *
-     * Roles are often managed via {grantRole} and {revokeRole}: this function's
-     * purpose is to provide a mechanism for accounts to lose their privileges
-     * if they are compromised (such as when a trusted device is misplaced).
-     *
-     * If the calling account had been revoked `role`, emits a {RoleRevoked}
-     * event.
-     *
-     * Requirements:
-     *
-     * - the caller must be `callerConfirmation`.
-     *
-     * May emit a {RoleRevoked} event.
-     */
-    function renounceRole(bytes32 role, address callerConfirmation) public virtual {
-        if (callerConfirmation != _msgSender()) {
-            revert AccessControlBadConfirmation();
-        }
-
-        _revokeRole(role, callerConfirmation);
-    }
-
-    /**
-     * @dev Sets `adminRole` as ``role``'s admin role.
-     *
-     * Emits a {RoleAdminChanged} event.
-     */
-    function _setRoleAdmin(bytes32 role, bytes32 adminRole) internal virtual {
-        AccessControlStorage storage $ = _getAccessControlStorage();
-        bytes32 previousAdminRole = getRoleAdmin(role);
-        $._roles[role].adminRole = adminRole;
-        emit RoleAdminChanged(role, previousAdminRole, adminRole);
-    }
-
-    /**
-     * @dev Attempts to grant `role` to `account` and returns a boolean indicating if `role` was granted.
-     *
-     * Internal function without access restriction.
-     *
-     * May emit a {RoleGranted} event.
-     */
-    function _grantRole(bytes32 role, address account) internal virtual returns (bool) {
-        AccessControlStorage storage $ = _getAccessControlStorage();
-        if (!hasRole(role, account)) {
-            $._roles[role].hasRole[account] = true;
-            emit RoleGranted(role, account, _msgSender());
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @dev Attempts to revoke `role` from `account` and returns a boolean indicating if `role` was revoked.
-     *
-     * Internal function without access restriction.
-     *
-     * May emit a {RoleRevoked} event.
-     */
-    function _revokeRole(bytes32 role, address account) internal virtual returns (bool) {
-        AccessControlStorage storage $ = _getAccessControlStorage();
-        if (hasRole(role, account)) {
-            $._roles[role].hasRole[account] = false;
-            emit RoleRevoked(role, account, _msgSender());
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-
-// lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Utils.sol
-
-// OpenZeppelin Contracts (last updated v5.2.0) (proxy/ERC1967/ERC1967Utils.sol)
-
-/**
- * @dev This library provides getters and event emitting update functions for
- * https://eips.ethereum.org/EIPS/eip-1967[ERC-1967] slots.
- */
-library ERC1967Utils {
-    /**
-     * @dev Storage slot with the address of the current implementation.
-     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1.
-     */
-    // solhint-disable-next-line private-vars-leading-underscore
-    bytes32 internal constant IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
-
-    /**
-     * @dev The `implementation` of the proxy is invalid.
-     */
-    error ERC1967InvalidImplementation(address implementation);
-
-    /**
-     * @dev The `admin` of the proxy is invalid.
-     */
-    error ERC1967InvalidAdmin(address admin);
-
-    /**
-     * @dev The `beacon` of the proxy is invalid.
-     */
-    error ERC1967InvalidBeacon(address beacon);
-
-    /**
-     * @dev An upgrade function sees `msg.value > 0` that may be lost.
-     */
-    error ERC1967NonPayable();
-
-    /**
-     * @dev Returns the current implementation address.
-     */
-    function getImplementation() internal view returns (address) {
-        return StorageSlot.getAddressSlot(IMPLEMENTATION_SLOT).value;
-    }
-
-    /**
-     * @dev Stores a new address in the ERC-1967 implementation slot.
-     */
-    function _setImplementation(address newImplementation) private {
-        if (newImplementation.code.length == 0) {
-            revert ERC1967InvalidImplementation(newImplementation);
-        }
-        StorageSlot.getAddressSlot(IMPLEMENTATION_SLOT).value = newImplementation;
-    }
-
-    /**
-     * @dev Performs implementation upgrade with additional setup call if data is nonempty.
-     * This function is payable only if the setup call is performed, otherwise `msg.value` is rejected
-     * to avoid stuck value in the contract.
-     *
-     * Emits an {IERC1967-Upgraded} event.
-     */
-    function upgradeToAndCall(address newImplementation, bytes memory data) internal {
-        _setImplementation(newImplementation);
-        emit IERC1967.Upgraded(newImplementation);
-
-        if (data.length > 0) {
-            Address.functionDelegateCall(newImplementation, data);
-        } else {
-            _checkNonPayable();
-        }
-    }
-
-    /**
-     * @dev Storage slot with the admin of the contract.
-     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1.
-     */
-    // solhint-disable-next-line private-vars-leading-underscore
-    bytes32 internal constant ADMIN_SLOT = 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
-
-    /**
-     * @dev Returns the current admin.
-     *
-     * TIP: To get this value clients can read directly from the storage slot shown below (specified by ERC-1967) using
-     * the https://eth.wiki/json-rpc/API#eth_getstorageat[`eth_getStorageAt`] RPC call.
-     * `0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103`
-     */
-    function getAdmin() internal view returns (address) {
-        return StorageSlot.getAddressSlot(ADMIN_SLOT).value;
-    }
-
-    /**
-     * @dev Stores a new address in the ERC-1967 admin slot.
-     */
-    function _setAdmin(address newAdmin) private {
-        if (newAdmin == address(0)) {
-            revert ERC1967InvalidAdmin(address(0));
-        }
-        StorageSlot.getAddressSlot(ADMIN_SLOT).value = newAdmin;
-    }
-
-    /**
-     * @dev Changes the admin of the proxy.
-     *
-     * Emits an {IERC1967-AdminChanged} event.
-     */
-    function changeAdmin(address newAdmin) internal {
-        emit IERC1967.AdminChanged(getAdmin(), newAdmin);
-        _setAdmin(newAdmin);
-    }
-
-    /**
-     * @dev The storage slot of the UpgradeableBeacon contract which defines the implementation for this proxy.
-     * This is the keccak-256 hash of "eip1967.proxy.beacon" subtracted by 1.
-     */
-    // solhint-disable-next-line private-vars-leading-underscore
-    bytes32 internal constant BEACON_SLOT = 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50;
-
-    /**
-     * @dev Returns the current beacon.
-     */
-    function getBeacon() internal view returns (address) {
-        return StorageSlot.getAddressSlot(BEACON_SLOT).value;
-    }
-
-    /**
-     * @dev Stores a new beacon in the ERC-1967 beacon slot.
-     */
-    function _setBeacon(address newBeacon) private {
-        if (newBeacon.code.length == 0) {
-            revert ERC1967InvalidBeacon(newBeacon);
-        }
-
-        StorageSlot.getAddressSlot(BEACON_SLOT).value = newBeacon;
-
-        address beaconImplementation = IBeacon(newBeacon).implementation();
-        if (beaconImplementation.code.length == 0) {
-            revert ERC1967InvalidImplementation(beaconImplementation);
-        }
-    }
-
-    /**
-     * @dev Change the beacon and trigger a setup call if data is nonempty.
-     * This function is payable only if the setup call is performed, otherwise `msg.value` is rejected
-     * to avoid stuck value in the contract.
-     *
-     * Emits an {IERC1967-BeaconUpgraded} event.
-     *
-     * CAUTION: Invoking this function has no effect on an instance of {BeaconProxy} since v5, since
-     * it uses an immutable beacon without looking at the value of the ERC-1967 beacon slot for
-     * efficiency.
-     */
-    function upgradeBeaconToAndCall(address newBeacon, bytes memory data) internal {
-        _setBeacon(newBeacon);
-        emit IERC1967.BeaconUpgraded(newBeacon);
-
-        if (data.length > 0) {
-            Address.functionDelegateCall(IBeacon(newBeacon).implementation(), data);
-        } else {
-            _checkNonPayable();
-        }
-    }
-
-    /**
-     * @dev Reverts if `msg.value` is not zero. It can be used to avoid `msg.value` stuck in the contract
-     * if an upgrade doesn't perform an initialization call.
-     */
-    function _checkNonPayable() private {
-        if (msg.value > 0) {
-            revert ERC1967NonPayable();
-        }
-    }
-}
-
 // lib/openzeppelin-contracts-upgradeable/contracts/token/ERC20/ERC20Upgradeable.sol
 
 // OpenZeppelin Contracts (last updated v5.2.0) (token/ERC20/ERC20.sol)
@@ -4970,154 +3846,6 @@ library SafeERC20 {
     }
 }
 
-// lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol
-
-// OpenZeppelin Contracts (last updated v5.2.0) (proxy/utils/UUPSUpgradeable.sol)
-
-/**
- * @dev An upgradeability mechanism designed for UUPS proxies. The functions included here can perform an upgrade of an
- * {ERC1967Proxy}, when this contract is set as the implementation behind such a proxy.
- *
- * A security mechanism ensures that an upgrade does not turn off upgradeability accidentally, although this risk is
- * reinstated if the upgrade retains upgradeability but removes the security mechanism, e.g. by replacing
- * `UUPSUpgradeable` with a custom implementation of upgrades.
- *
- * The {_authorizeUpgrade} function must be overridden to include access restriction to the upgrade mechanism.
- */
-abstract contract UUPSUpgradeable is Initializable, IERC1822Proxiable {
-    /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
-    address private immutable __self = address(this);
-
-    /**
-     * @dev The version of the upgrade interface of the contract. If this getter is missing, both `upgradeTo(address)`
-     * and `upgradeToAndCall(address,bytes)` are present, and `upgradeTo` must be used if no function should be called,
-     * while `upgradeToAndCall` will invoke the `receive` function if the second argument is the empty byte string.
-     * If the getter returns `"5.0.0"`, only `upgradeToAndCall(address,bytes)` is present, and the second argument must
-     * be the empty byte string if no function should be called, making it impossible to invoke the `receive` function
-     * during an upgrade.
-     */
-    string public constant UPGRADE_INTERFACE_VERSION = "5.0.0";
-
-    /**
-     * @dev The call is from an unauthorized context.
-     */
-    error UUPSUnauthorizedCallContext();
-
-    /**
-     * @dev The storage `slot` is unsupported as a UUID.
-     */
-    error UUPSUnsupportedProxiableUUID(bytes32 slot);
-
-    /**
-     * @dev Check that the execution is being performed through a delegatecall call and that the execution context is
-     * a proxy contract with an implementation (as defined in ERC-1967) pointing to self. This should only be the case
-     * for UUPS and transparent proxies that are using the current contract as their implementation. Execution of a
-     * function through ERC-1167 minimal proxies (clones) would not normally pass this test, but is not guaranteed to
-     * fail.
-     */
-    modifier onlyProxy() {
-        _checkProxy();
-        _;
-    }
-
-    /**
-     * @dev Check that the execution is not being performed through a delegate call. This allows a function to be
-     * callable on the implementing contract but not through proxies.
-     */
-    modifier notDelegated() {
-        _checkNotDelegated();
-        _;
-    }
-
-    function __UUPSUpgradeable_init() internal onlyInitializing {
-    }
-
-    function __UUPSUpgradeable_init_unchained() internal onlyInitializing {
-    }
-    /**
-     * @dev Implementation of the ERC-1822 {proxiableUUID} function. This returns the storage slot used by the
-     * implementation. It is used to validate the implementation's compatibility when performing an upgrade.
-     *
-     * IMPORTANT: A proxy pointing at a proxiable contract should not be considered proxiable itself, because this risks
-     * bricking a proxy that upgrades to it, by delegating to itself until out of gas. Thus it is critical that this
-     * function revert if invoked through a proxy. This is guaranteed by the `notDelegated` modifier.
-     */
-    function proxiableUUID() external view virtual notDelegated returns (bytes32) {
-        return ERC1967Utils.IMPLEMENTATION_SLOT;
-    }
-
-    /**
-     * @dev Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call
-     * encoded in `data`.
-     *
-     * Calls {_authorizeUpgrade}.
-     *
-     * Emits an {Upgraded} event.
-     *
-     * @custom:oz-upgrades-unsafe-allow-reachable delegatecall
-     */
-    function upgradeToAndCall(address newImplementation, bytes memory data) public payable virtual onlyProxy {
-        _authorizeUpgrade(newImplementation);
-        _upgradeToAndCallUUPS(newImplementation, data);
-    }
-
-    /**
-     * @dev Reverts if the execution is not performed via delegatecall or the execution
-     * context is not of a proxy with an ERC-1967 compliant implementation pointing to self.
-     */
-    function _checkProxy() internal view virtual {
-        if (
-            address(this) == __self || // Must be called through delegatecall
-            ERC1967Utils.getImplementation() != __self // Must be called through an active proxy
-        ) {
-            revert UUPSUnauthorizedCallContext();
-        }
-    }
-
-    /**
-     * @dev Reverts if the execution is performed via delegatecall.
-     * See {notDelegated}.
-     */
-    function _checkNotDelegated() internal view virtual {
-        if (address(this) != __self) {
-            // Must not be called through delegatecall
-            revert UUPSUnauthorizedCallContext();
-        }
-    }
-
-    /**
-     * @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract. Called by
-     * {upgradeToAndCall}.
-     *
-     * Normally, this function will use an xref:access.adoc[access control] modifier such as {Ownable-onlyOwner}.
-     *
-     * ```solidity
-     * function _authorizeUpgrade(address) internal onlyOwner {}
-     * ```
-     */
-    function _authorizeUpgrade(address newImplementation) internal virtual;
-
-    /**
-     * @dev Performs an implementation upgrade with a security check for UUPS proxies, and additional setup call.
-     *
-     * As a security check, {proxiableUUID} is invoked in the new implementation, and the return value
-     * is expected to be the implementation slot in ERC-1967.
-     *
-     * Emits an {IERC1967-Upgraded} event.
-     */
-    function _upgradeToAndCallUUPS(address newImplementation, bytes memory data) private {
-        try IERC1822Proxiable(newImplementation).proxiableUUID() returns (bytes32 slot) {
-            if (slot != ERC1967Utils.IMPLEMENTATION_SLOT) {
-                revert UUPSUnsupportedProxiableUUID(slot);
-            }
-            ERC1967Utils.upgradeToAndCall(newImplementation, data);
-        } catch {
-            // The implementation is not UUPS
-            revert ERC1967Utils.ERC1967InvalidImplementation(newImplementation);
-        }
-    }
-}
-
 // lib/openzeppelin-contracts-upgradeable/contracts/token/ERC20/extensions/ERC4626Upgradeable.sol
 
 // OpenZeppelin Contracts (last updated v5.1.0) (token/ERC20/extensions/ERC4626.sol)
@@ -5515,709 +4243,622 @@ interface IRfyVault is IERC4626 {
 	function unpauseAll() external;
 }
 
-// src/RfyVault.sol
+// src/RfyVaultManager.sol
 
-/**
- * @title RfyVault
- * @dev Vault contract for managing deposits, withdrawals, and trading epochs
- */
-contract RfyVault is
-	ERC4626Upgradeable,
-	AccessControlUpgradeable,
-	UUPSUpgradeable,
-	ReentrancyGuardUpgradeable,
-	IRfyVault
-{
+contract RfyVaultManager is Ownable, ReentrancyGuard, IRfyVaultManager {
 	using SafeERC20 for IERC20;
-
-	bytes32 public constant TRADER_ROLE = keccak256("TRADER_ROLE");
-	bytes32 public constant BOOTSTRAPPER_ROLE = keccak256("BOOTSTRAPPER_ROLE");
 
 	/*//////////////////////////////////////////////////////////////
                             STATE VARIABLES
     //////////////////////////////////////////////////////////////*/
 
-	/// @notice Address of external vault
-	IERC4626 public override externalVault;
+	/// @notice Whether a vault has been registered and is usable in this manager
+	mapping(address vault => bool) public registeredVaults;
 
-	/// @notice Whether deposits are currently allowed
-	bool public override depositsPaused;
+	/// @notice Deposit round data per vault per round id
+	mapping(address vault => mapping(uint256 round => DepositRound)) public depositRounds;
 
-	/// @notice Whether withdrawals are currently allowed
-	bool public override withdrawalsPaused;
+	/// @notice Withdrawal round data per vault per round id
+	mapping(address vault => mapping(uint256 round => WithdrawalRound)) public withdrawalRounds;
 
-	/// @notice Duration of each epoch in seconds
-	uint256 public override epochDuration;
+	/// @notice Currently open (unprocessed) deposit round id per vault
+	mapping(address vault => uint256) public currentDepositRound;
 
-	/// @notice Current epoch number
-	uint256 public override currentEpoch;
+	/// @notice Currently open (unprocessed) withdrawal round id per vault
+	mapping(address vault => uint256) public currentWithdrawalRound;
 
-	/// @notice Total tracked balance of assets in the vault
-	uint256 private _totalAssets;
+	/// @notice Amount of assets each user queued per vault per deposit round
+	mapping(address vault => mapping(address user => mapping(uint256 round => uint256))) public userDepositAmounts;
 
-	/// @notice Maximum total assets that can be deposited in the vault
-	uint256 public maxTotalDeposits;
+	/// @notice Amount of vault shares each user queued per vault per withdrawal round
+	mapping(address vault => mapping(address user => mapping(uint256 round => uint256))) public userWithdrawalShares;
 
-	/// @notice Meme name associated with this vault
-	string public memeName;
+	/// @notice Tracks the highest deposit round a user has participated in per vault (for view helpers)
+	mapping(address vault => mapping(address user => uint256)) private _userHighestDepositRound;
 
-	/// @notice Mapping of epoch number to epoch data
-	mapping(uint256 => EpochData) public _epochs;
+	/// @notice Tracks the highest withdrawal round a user has participated in per vault (for view helpers)
+	mapping(address vault => mapping(address user => uint256)) private _userHighestWithdrawalRound;
 
-	/**
-	 * @dev Initializes the contract after deployment
-	 */
-	function initialize(
-		string calldata _tokenName,
-		string calldata _tokenSymbol,
-		string calldata _memeName,
-		address _asset,
-		address _owner,
-		address _trader,
-		address _externalVault,
-		uint256 _epochDuration,
-		uint256 _maxTotalDeposits
-	) public override initializer {
-		__ERC4626_init(IERC20(_asset));
-		__ERC20_init(_tokenName, _tokenSymbol);
-		__AccessControl_init();
-		__UUPSUpgradeable_init();
-		__ReentrancyGuard_init();
+	/// @notice Vault shares the user has parked inside this contract (via {claimSharesInternal}).
+	///         {queueWithdrawal} will consume this balance before pulling from the user's wallet.
+	mapping(address vault => mapping(address user => uint256)) public internalShareBalance;
 
-		if (address(_asset) == address(0) || _owner == address(0)) revert SV_InvalidAddress();
+	/// @notice Underlying assets the user has parked inside this contract (via direct
+	///         {withdrawFromVault} / {withdraw}). Keyed by asset address — NOT by vault —
+	///         so users with positions across multiple vaults sharing an asset can pull a
+	///         single consolidated balance.
+	mapping(address asset => mapping(address user => uint256)) public internalAssetBalance;
 
-		_grantRole(DEFAULT_ADMIN_ROLE, _owner);
-		_grantRole(TRADER_ROLE, _trader);
-		_grantRole(BOOTSTRAPPER_ROLE, _owner);
-		epochDuration = _epochDuration;
-		externalVault = IERC4626(_externalVault);
-		memeName = _memeName;
-		maxTotalDeposits = _maxTotalDeposits;
-		withdrawalsPaused = true;
+	/// @notice Public registry of every vault ever registered, in registration order.
+	///         Mirrors {registeredVaults} — use this for off-chain enumeration.
+	address[] public allVaults;
+
+	/*//////////////////////////////////////////////////////////////
+                              CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
+
+	constructor(address _owner) Ownable(_owner) {}
+
+	/*//////////////////////////////////////////////////////////////
+                              MODIFIERS
+    //////////////////////////////////////////////////////////////*/
+
+	modifier onlyRegisteredVault(address vault) {
+		if (!registeredVaults[vault]) revert VM_VaultNotRegistered();
+		_;
 	}
 
 	/*//////////////////////////////////////////////////////////////
-                        EPOCH MANAGEMENT
+                            OWNER FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-	/**
-	 * @notice Starts a new trading epoch with minimum deposit validation
-	 * @dev Only admin can start an epoch, and only when no epoch is active
-	 * @param minimumDeposits Minimum amount of deposits required to start the epoch
-	 */
-	function startNewEpoch(uint256 minimumDeposits) external override onlyRole(BOOTSTRAPPER_ROLE) {
-		_startNewEpoch(minimumDeposits);
+	/// @inheritdoc IRfyVaultManager
+	function registerVault(address vault) external onlyOwner {
+		if (vault == address(0)) revert VM_InvalidAddress();
+		if (registeredVaults[vault]) revert VM_VaultAlreadyRegistered();
+
+		IRfyVault(vault).asset();
+
+		registeredVaults[vault] = true;
+		allVaults.push(vault);
+		emit VaultRegistered(vault);
 	}
 
-	/**
-	 * @notice Internal function to start a new trading epoch
-	 * @param minimumDeposits Minimum amount of deposits required to start the epoch (0 = no minimum)
-	 */
-	function _startNewEpoch(uint256 minimumDeposits) internal {
-		uint256 newEpochId = ++currentEpoch;
-		if (_epochs[newEpochId - 1].isEpochActive) {
-			revert SV_EpochActive();
-		}
+	/// @inheritdoc IRfyVaultManager
+	function emergencyWithdraw(
+		address token,
+		address to,
+		uint256 amount
+	) external onlyOwner {
+		if (token == address(0) || to == address(0)) revert VM_InvalidAddress();
+		if (amount == 0) revert VM_InvalidAmount();
+		IERC20(token).safeTransfer(to, amount);
+		emit EmergencyWithdrawn(token, to, amount);
+	}
 
-		EpochData storage newEpoch = _epochs[newEpochId];
-
-		uint256 amountToDeposit = _totalAssets;
-		if (amountToDeposit == 0) revert SV_NoAvailableFunds();
-		
-		// Validate minimum deposits if specified
-		if (minimumDeposits > 0 && amountToDeposit < minimumDeposits) {
-			revert SV_InsufficientMinimumDeposits();
-		}
-
-		newEpoch.startTime = uint96(block.timestamp);
-		newEpoch.initialVaultAssets = amountToDeposit;
-
-		uint256 maxDeposit_ = address(externalVault) != address(0) ? externalVault.maxDeposit(address(this)) : 0;
-		uint256 unutilizedDeposit;
-		if (amountToDeposit > maxDeposit_) {
-			unutilizedDeposit = amountToDeposit - maxDeposit_;
-			amountToDeposit = maxDeposit_;
-		}
-
-		// Deposit all available funds into external vault
-		if (address(externalVault) != address(0)) {
-			IERC20(asset()).forceApprove(address(externalVault), amountToDeposit);
-			uint256 sharesReceived = externalVault.deposit(amountToDeposit, address(this));
-    		if (sharesReceived == 0) revert SV_ZeroSharesReceived();
-			// Reset approval to 0 for security
-			IERC20(asset()).forceApprove(address(externalVault), 0);
-		}
-
-		newEpoch.initialExternalVaultDeposits = amountToDeposit;
-		newEpoch.initialUnutilizedAsset = unutilizedDeposit;
-		newEpoch.currentExternalVaultDeposits = amountToDeposit;
-		newEpoch.currentUnutilizedAsset = unutilizedDeposit;
-		newEpoch.isEpochActive = true;
-
-		depositsPaused = true;
-		withdrawalsPaused = true;
-
-		emit EpochStarted(newEpochId, block.timestamp);
+	/// @inheritdoc IRfyVaultManager
+	function vaultsLength() external view returns (uint256) {
+		return allVaults.length;
 	}
 
 	/*//////////////////////////////////////////////////////////////
-                        TRADING FUNCTIONS
+                            USER — DEPOSITS
     //////////////////////////////////////////////////////////////*/
 
-	/**
-	 * @notice Internal function to handle borrowing logic for both trader and admin
-	 * @param amount Amount to borrow
-	 * @return amountToTransfer The total amount that will be transferred
-	 */
-	function _processBorrow(uint256 amount) internal returns (uint256) {
-		EpochData storage epoch = _epochs[currentEpoch];
-		
-		uint256 unutilized = epoch.currentUnutilizedAsset;
-		uint256 availableExternalVaultShares = _getExternalVaultBalance();
+	/// @inheritdoc IRfyVaultManager
+	function queueDeposit(
+		address vault,
+		uint256 assets
+	) external nonReentrant onlyRegisteredVault(vault) {
+		if (assets == 0) revert VM_InvalidAmount();
 
-		uint256 borrowing = amount;
+		uint256 round = currentDepositRound[vault];
+		address assetToken = IRfyVault(vault).asset();
 
-		// First use unutilized assets if available
-		uint256 utilizing;
-		if (unutilized != 0) {
-			utilizing = borrowing > unutilized ? unutilized : borrowing;
-			epoch.currentUnutilizedAsset -= utilizing;
-			borrowing -= utilizing;
+		// consume parked internal asset balance first; pull only the shortfall from the wallet
+		uint256 internalBal = internalAssetBalance[assetToken][msg.sender];
+		uint256 fromInternal = internalBal < assets ? internalBal : assets;
+		if (fromInternal != 0) {
+			internalAssetBalance[assetToken][msg.sender] = internalBal - fromInternal;
+			emit InternalAssetsConsumed(assetToken, msg.sender, fromInternal);
+		}
+		uint256 shortfall = assets - fromInternal;
+		if (shortfall != 0) {
+			IERC20(assetToken).safeTransferFrom(msg.sender, address(this), shortfall);
 		}
 
-		// If we still need more funds, withdraw from ExternalVault
-		if (borrowing != 0) {
-			if (availableExternalVaultShares == 0 && utilizing == 0) revert SV_ExternalVaultSharesZero();
+		depositRounds[vault][round].totalAssets += assets;
+		userDepositAmounts[vault][msg.sender][round] += assets;
 
-			uint256 maxWithdrawable = _getExternalVaultPreviewRedeem();
+		if (round > _userHighestDepositRound[vault][msg.sender]) {
+			_userHighestDepositRound[vault][msg.sender] = round;
+		}
 
-			if (borrowing >= maxWithdrawable) {
-				borrowing = _externalVaultRedeem(availableExternalVaultShares);
+		emit DepositQueued(vault, msg.sender, round, assets);
+	}
 
-				int256 externalVaultPnl = int256(borrowing) - int256(epoch.currentExternalVaultDeposits);
+	/// @inheritdoc IRfyVaultManager
+	function cancelDeposit(
+		address vault,
+		uint256 round,
+		uint256 amount
+	) external nonReentrant onlyRegisteredVault(vault) {
+		if (amount == 0) revert VM_InvalidAmount();
+		if (depositRounds[vault][round].processed) revert VM_RoundAlreadyProcessed();
 
-				epoch.externalVaultPnl += externalVaultPnl;
-				epoch.currentExternalVaultDeposits = 0;
-			} else {
-				if (address(externalVault) != address(0)) {
-					// Calculate shares needed for the borrowing amount
-					uint256 sharesToRedeem = externalVault.previewWithdraw(borrowing);
-					
-					// Calculate what we expect based on proportional share value
-					uint256 expectedAssetsForShares = externalVault.previewRedeem(sharesToRedeem);
-					
-					uint256 actualAssetsReceived = externalVault.redeem(sharesToRedeem, address(this), address(this));
-					
-					// Track any profit/loss from the external vault
-					int256 pnlDifference = int256(actualAssetsReceived) - int256(expectedAssetsForShares);
-					epoch.externalVaultPnl += pnlDifference;
-					
-					// Update borrowing to the actual amount received
-					borrowing = actualAssetsReceived;
-					
-					// Calculate the proportional deposit amount that was withdrawn
-					uint256 proportionalDeposit = (sharesToRedeem * epoch.currentExternalVaultDeposits) / availableExternalVaultShares;
-					epoch.currentExternalVaultDeposits -= proportionalDeposit;
-				}
+		uint256 userQueued = userDepositAmounts[vault][msg.sender][round];
+		if (amount > userQueued) revert VM_InsufficientBalance();
+
+		userDepositAmounts[vault][msg.sender][round] -= amount;
+		depositRounds[vault][round].totalAssets -= amount;
+
+		address assetToken = IRfyVault(vault).asset();
+		IERC20(assetToken).safeTransfer(msg.sender, amount);
+
+		emit DepositCancelled(vault, msg.sender, round, amount);
+	}
+
+	/*//////////////////////////////////////////////////////////////
+                         USER — WITHDRAWALS
+    //////////////////////////////////////////////////////////////*/
+
+	/// @inheritdoc IRfyVaultManager
+	function queueWithdrawal(
+		address vault,
+		uint256 shares
+	) external nonReentrant onlyRegisteredVault(vault) {
+		if (shares == 0) revert VM_InvalidAmount();
+
+		uint256 round = currentWithdrawalRound[vault];
+
+		// consume parked internal balance first; pull only the shortfall from the wallet
+		uint256 internalBal = internalShareBalance[vault][msg.sender];
+		uint256 fromInternal = internalBal < shares ? internalBal : shares;
+		if (fromInternal != 0) {
+			internalShareBalance[vault][msg.sender] = internalBal - fromInternal;
+			emit InternalSharesConsumed(vault, msg.sender, fromInternal);
+		}
+		uint256 shortfall = shares - fromInternal;
+		if (shortfall != 0) {
+			IERC20(vault).safeTransferFrom(msg.sender, address(this), shortfall);
+		}
+
+		withdrawalRounds[vault][round].totalShares += shares;
+		userWithdrawalShares[vault][msg.sender][round] += shares;
+
+		if (round > _userHighestWithdrawalRound[vault][msg.sender]) {
+			_userHighestWithdrawalRound[vault][msg.sender] = round;
+		}
+
+		emit WithdrawalQueued(vault, msg.sender, round, shares);
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function cancelWithdrawal(
+		address vault,
+		uint256 round,
+		uint256 amount
+	) external nonReentrant onlyRegisteredVault(vault) {
+		if (amount == 0) revert VM_InvalidAmount();
+		if (withdrawalRounds[vault][round].processed) revert VM_RoundAlreadyProcessed();
+
+		uint256 userQueued = userWithdrawalShares[vault][msg.sender][round];
+		if (amount > userQueued) revert VM_InsufficientBalance();
+
+		userWithdrawalShares[vault][msg.sender][round] -= amount;
+		withdrawalRounds[vault][round].totalShares -= amount;
+
+		IERC20(vault).safeTransfer(msg.sender, amount);
+
+		emit WithdrawalCancelled(vault, msg.sender, round, amount);
+	}
+
+	/*//////////////////////////////////////////////////////////////
+                    DIRECT (UNPAUSED) DEPOSIT / WITHDRAW
+    //////////////////////////////////////////////////////////////*/
+
+	/// @inheritdoc IRfyVaultManager
+	function depositToVault(
+		address vault,
+		uint256 amount
+	) external nonReentrant onlyRegisteredVault(vault) {
+		_directDeposit(vault, amount);
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function deposit(
+		address[] calldata vaults,
+		uint256[] calldata amounts
+	) external nonReentrant {
+		uint256 len = vaults.length;
+		if (len == 0) revert VM_EmptyInput();
+		if (len != amounts.length) revert VM_LengthMismatch();
+		for (uint256 i; i < len; ++i) {
+			address v = vaults[i];
+			if (!registeredVaults[v]) revert VM_VaultNotRegistered();
+			_directDeposit(v, amounts[i]);
+		}
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function withdrawFromVault(
+		address vault,
+		uint256 shares
+	) external nonReentrant onlyRegisteredVault(vault) {
+		_directWithdraw(vault, shares);
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function withdraw(
+		address[] calldata vaults,
+		uint256[] calldata shares
+	) external nonReentrant {
+		uint256 len = vaults.length;
+		if (len == 0) revert VM_EmptyInput();
+		if (len != shares.length) revert VM_LengthMismatch();
+		for (uint256 i; i < len; ++i) {
+			address v = vaults[i];
+			if (!registeredVaults[v]) revert VM_VaultNotRegistered();
+			_directWithdraw(v, shares[i]);
+		}
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function withdrawInternalAssets(address asset, uint256 amount) external nonReentrant {
+		if (asset == address(0)) revert VM_InvalidAddress();
+		if (amount == 0) revert VM_InvalidAmount();
+		uint256 bal = internalAssetBalance[asset][msg.sender];
+		if (amount > bal) revert VM_InsufficientInternalAssetBalance();
+
+		internalAssetBalance[asset][msg.sender] = bal - amount;
+		IERC20(asset).safeTransfer(msg.sender, amount);
+
+		emit InternalAssetsWithdrawn(asset, msg.sender, amount);
+	}
+
+	/// @dev Pulls `amount` of underlying from the caller, deposits into `vault`,
+	///      and credits the received shares to the caller's internal share balance.
+	function _directDeposit(address vault, uint256 amount) internal {
+		if (amount == 0) revert VM_InvalidAmount();
+		IRfyVault rfyVault = IRfyVault(vault);
+		if (rfyVault.depositsPaused()) revert VM_DepositsArePaused();
+
+		address assetToken = rfyVault.asset();
+
+		// consume parked internal asset balance first; pull only the shortfall from the wallet
+		uint256 internalBal = internalAssetBalance[assetToken][msg.sender];
+		uint256 fromInternal = internalBal < amount ? internalBal : amount;
+		if (fromInternal != 0) {
+			internalAssetBalance[assetToken][msg.sender] = internalBal - fromInternal;
+			emit InternalAssetsConsumed(assetToken, msg.sender, fromInternal);
+		}
+		uint256 shortfall = amount - fromInternal;
+		if (shortfall != 0) {
+			IERC20(assetToken).safeTransferFrom(msg.sender, address(this), shortfall);
+		}
+
+		IERC20(assetToken).forceApprove(vault, amount);
+		uint256 sharesReceived = rfyVault.deposit(amount, address(this));
+		IERC20(assetToken).forceApprove(vault, 0);
+
+		internalShareBalance[vault][msg.sender] += sharesReceived;
+		emit VaultDeposited(vault, msg.sender, amount, sharesReceived);
+	}
+
+	/// @dev Sources `shares` from the caller's internal balance first, then their wallet,
+	///      redeems from `vault`, and credits received assets to the caller's internal asset balance.
+	function _directWithdraw(address vault, uint256 shares) internal {
+		if (shares == 0) revert VM_InvalidAmount();
+		IRfyVault rfyVault = IRfyVault(vault);
+		if (rfyVault.withdrawalsPaused()) revert VM_WithdrawalsArePaused();
+
+		uint256 internalBal = internalShareBalance[vault][msg.sender];
+		uint256 fromInternal = internalBal < shares ? internalBal : shares;
+		if (fromInternal != 0) {
+			internalShareBalance[vault][msg.sender] = internalBal - fromInternal;
+			emit InternalSharesConsumed(vault, msg.sender, fromInternal);
+		}
+		uint256 shortfall = shares - fromInternal;
+		if (shortfall != 0) {
+			IERC20(vault).safeTransferFrom(msg.sender, address(this), shortfall);
+		}
+
+		uint256 assetsReceived = rfyVault.redeem(shares, address(this), address(this));
+		internalAssetBalance[rfyVault.asset()][msg.sender] += assetsReceived;
+		emit VaultWithdrawn(vault, msg.sender, shares, assetsReceived);
+	}
+
+	/*//////////////////////////////////////////////////////////////
+                       TRUSTLESS BATCH PROCESSING
+    //////////////////////////////////////////////////////////////*/
+
+	/// @inheritdoc IRfyVaultManager
+	function processDeposits(address vault) external nonReentrant onlyRegisteredVault(vault) {
+		IRfyVault rfyVault = IRfyVault(vault);
+		if (rfyVault.depositsPaused()) revert VM_DepositsArePaused();
+		if (depositRounds[vault][currentDepositRound[vault]].totalAssets == 0) revert VM_NothingToProcess();
+		_processDeposits(vault);
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function processWithdrawals(address vault) external nonReentrant onlyRegisteredVault(vault) {
+		IRfyVault rfyVault = IRfyVault(vault);
+		if (rfyVault.withdrawalsPaused()) revert VM_WithdrawalsArePaused();
+		if (withdrawalRounds[vault][currentWithdrawalRound[vault]].totalShares == 0) revert VM_NothingToProcess();
+		_processWithdrawals(vault);
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function processAllDeposits() external nonReentrant returns (uint256 processed) {
+		uint256 len = allVaults.length;
+		for (uint256 i = 0; i < len; i++) {
+			address vault = allVaults[i];
+			if (IRfyVault(vault).depositsPaused()) continue;
+			if (depositRounds[vault][currentDepositRound[vault]].totalAssets == 0) continue;
+			_processDeposits(vault);
+			unchecked { ++processed; }
+		}
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function processAllWithdrawals() external nonReentrant returns (uint256 processed) {
+		uint256 len = allVaults.length;
+		for (uint256 i = 0; i < len; i++) {
+			address vault = allVaults[i];
+			if (IRfyVault(vault).withdrawalsPaused()) continue;
+			if (withdrawalRounds[vault][currentWithdrawalRound[vault]].totalShares == 0) continue;
+			_processWithdrawals(vault);
+			unchecked { ++processed; }
+		}
+	}
+
+	/// @dev Core deposit-batch logic. Caller is responsible for `nonReentrant`,
+	///      registration, paused, and non-empty-queue checks.
+	function _processDeposits(address vault) internal {
+		IRfyVault rfyVault = IRfyVault(vault);
+
+		uint256 round = currentDepositRound[vault];
+		DepositRound storage dr = depositRounds[vault][round];
+		uint256 totalAssets_ = dr.totalAssets;
+
+		// advance round before any external call so new queues open immediately
+		currentDepositRound[vault] = round + 1;
+
+		address assetToken = rfyVault.asset();
+
+		// cap by current vault headroom so a partially-full cap (or a front-running
+		// direct deposit) cannot freeze the entire round; unfilled portion becomes refund
+		uint256 headroom = rfyVault.maxDeposit(address(this));
+		uint256 assetsToDeposit = headroom < totalAssets_ ? headroom : totalAssets_;
+
+		uint256 sharesReceived;
+		if (assetsToDeposit != 0) {
+			IERC20(assetToken).forceApprove(vault, assetsToDeposit);
+			sharesReceived = rfyVault.deposit(assetsToDeposit, address(this));
+			IERC20(assetToken).forceApprove(vault, 0);
+		}
+
+		dr.totalShares = sharesReceived;
+		dr.refundAssets = totalAssets_ - assetsToDeposit;
+		dr.processed = true;
+
+		emit DepositsProcessed(vault, round, totalAssets_, sharesReceived);
+	}
+
+	/// @dev Core withdrawal-batch logic. Caller is responsible for `nonReentrant`,
+	///      registration, paused, and non-empty-queue checks.
+	function _processWithdrawals(address vault) internal {
+		IRfyVault rfyVault = IRfyVault(vault);
+
+		uint256 round = currentWithdrawalRound[vault];
+		WithdrawalRound storage wr = withdrawalRounds[vault][round];
+		uint256 totalShares_ = wr.totalShares;
+
+		currentWithdrawalRound[vault] = round + 1;
+
+		uint256 assetsReceived = rfyVault.redeem(totalShares_, address(this), address(this));
+
+		wr.totalAssets = assetsReceived;
+		wr.processed = true;
+
+		emit WithdrawalsProcessed(vault, round, totalShares_, assetsReceived);
+	}
+
+	/*//////////////////////////////////////////////////////////////
+                            CLAIM FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+	/// @inheritdoc IRfyVaultManager
+	function claimShares(address vault, uint256 round) external nonReentrant onlyRegisteredVault(vault) {
+		DepositRound storage dr = depositRounds[vault][round];
+		if (!dr.processed) revert VM_RoundNotProcessed();
+
+		uint256 userAssets = userDepositAmounts[vault][msg.sender][round];
+		if (userAssets == 0) revert VM_NothingToClaim();
+
+		userDepositAmounts[vault][msg.sender][round] = 0;
+
+		uint256 userShares = (userAssets * dr.totalShares) / dr.totalAssets;
+		uint256 userRefund = (userAssets * dr.refundAssets) / dr.totalAssets;
+
+		if (userShares != 0) {
+			IERC20(vault).safeTransfer(msg.sender, userShares);
+		}
+		if (userRefund != 0) {
+			IERC20(IRfyVault(vault).asset()).safeTransfer(msg.sender, userRefund);
+		}
+
+		emit SharesClaimed(vault, msg.sender, round, userShares);
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function claimSharesInternal(
+		address vault,
+		uint256 round
+	) external nonReentrant onlyRegisteredVault(vault) {
+		DepositRound storage dr = depositRounds[vault][round];
+		if (!dr.processed) revert VM_RoundNotProcessed();
+
+		uint256 userAssets = userDepositAmounts[vault][msg.sender][round];
+		if (userAssets == 0) revert VM_NothingToClaim();
+
+		userDepositAmounts[vault][msg.sender][round] = 0;
+
+		uint256 userShares = (userAssets * dr.totalShares) / dr.totalAssets;
+		uint256 userRefund = (userAssets * dr.refundAssets) / dr.totalAssets;
+
+		if (userShares != 0) {
+			internalShareBalance[vault][msg.sender] += userShares;
+		}
+		// refund (cap-grief surplus) is always sent to the wallet — no internal-asset path
+		if (userRefund != 0) {
+			IERC20(IRfyVault(vault).asset()).safeTransfer(msg.sender, userRefund);
+		}
+
+		emit SharesClaimedInternal(vault, msg.sender, round, userShares);
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function withdrawInternalShares(
+		address vault,
+		uint256 amount
+	) external nonReentrant onlyRegisteredVault(vault) {
+		if (amount == 0) revert VM_InvalidAmount();
+		uint256 bal = internalShareBalance[vault][msg.sender];
+		if (amount > bal) revert VM_InsufficientInternalBalance();
+
+		internalShareBalance[vault][msg.sender] = bal - amount;
+		IERC20(vault).safeTransfer(msg.sender, amount);
+
+		emit InternalSharesWithdrawn(vault, msg.sender, amount);
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function claimAssets(address vault, uint256 round) external nonReentrant onlyRegisteredVault(vault) {
+		WithdrawalRound storage wr = withdrawalRounds[vault][round];
+		if (!wr.processed) revert VM_RoundNotProcessed();
+
+		uint256 userShares = userWithdrawalShares[vault][msg.sender][round];
+		if (userShares == 0) revert VM_NothingToClaim();
+
+		userWithdrawalShares[vault][msg.sender][round] = 0;
+
+		uint256 userAssets = (userShares * wr.totalAssets) / wr.totalShares;
+
+		address assetToken = IRfyVault(vault).asset();
+		IERC20(assetToken).safeTransfer(msg.sender, userAssets);
+
+		emit AssetsClaimed(vault, msg.sender, round, userAssets);
+	}
+
+	/*//////////////////////////////////////////////////////////////
+                             VIEW FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+	/// @inheritdoc IRfyVaultManager
+	function getClaimableShares(address vault, address user, uint256 round) external view returns (uint256) {
+		DepositRound storage dr = depositRounds[vault][round];
+		if (!dr.processed || dr.totalAssets == 0) return 0;
+
+		uint256 userAssets = userDepositAmounts[vault][user][round];
+		if (userAssets == 0) return 0;
+
+		return (userAssets * dr.totalShares) / dr.totalAssets;
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function getClaimableAssets(address vault, address user, uint256 round) external view returns (uint256) {
+		WithdrawalRound storage wr = withdrawalRounds[vault][round];
+		if (!wr.processed || wr.totalShares == 0) return 0;
+
+		uint256 userShares = userWithdrawalShares[vault][user][round];
+		if (userShares == 0) return 0;
+
+		return (userShares * wr.totalAssets) / wr.totalShares;
+	}
+
+	/// @inheritdoc IRfyVaultManager
+	function getUnclaimedDepositRounds(
+		address vault,
+		address user
+	) external view returns (uint256[] memory rounds, uint256[] memory claimableShares) {
+		uint256 highestRound = _userHighestDepositRound[vault][user];
+		uint256 currentRound = currentDepositRound[vault];
+
+		// open round is unprocessed — exclude it from the upper bound
+		uint256 upperBound = highestRound < currentRound ? highestRound + 1 : currentRound;
+
+		uint256 count;
+		for (uint256 i = 0; i < upperBound; i++) {
+			DepositRound storage dr = depositRounds[vault][i];
+			if (dr.processed && userDepositAmounts[vault][user][i] > 0) {
+				count++;
 			}
 		}
 
-		return utilizing + borrowing;
-	}
+		rounds = new uint256[](count);
+		claimableShares = new uint256[](count);
 
-	/**
-	 * @notice Allows trader to borrow funds during an active epoch
-	 * @param amount Amount to borrow
-	 * @return amountReceived The amount transferred to the trader
-	 */ 
-	function borrow(uint256 amount) external override onlyRole(TRADER_ROLE) returns (uint256) {
-		if (amount == 0) revert SV_InvalidAmount();
-		EpochData storage epoch = _epochs[currentEpoch];
-		if (!epoch.isEpochActive) revert SV_EpochNotActive();
-
-		uint256 amountToTransfer = _processBorrow(amount);
-
-		epoch.fundsBorrowed += amountToTransfer;
-		IERC20(asset()).safeTransfer(msg.sender, amountToTransfer);
-
-		emit FundsBorrowed(msg.sender, amountToTransfer);
-		
-		return amountToTransfer;
-	}
-
-	/**
-	 * @notice Allows admin to borrow funds during an active epoch
-	 * @param amount Amount to borrow
-	 * @return amountReceived The amount transferred to the admin
-	 */ 
-	function adminBorrow(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256) {
-		if (amount == 0) revert SV_InvalidAmount();
-		EpochData storage epoch = _epochs[currentEpoch];
-		if (!epoch.isEpochActive) revert SV_EpochNotActive();
-
-		uint256 amountToTransfer = _processBorrow(amount);
-
-		epoch.adminFundsBorrowed += amountToTransfer;
-		IERC20(asset()).safeTransfer(msg.sender, amountToTransfer);
-
-		emit AdminFundsBorrowed(msg.sender, amountToTransfer);
-		
-		return amountToTransfer;
-	}	/**
-	 * @notice Settles borrowed funds with PnL
-	 * @param pnl Profit (positive) or loss (negative)
-	 */
-	function settle(int256 pnl) external onlyRole(TRADER_ROLE) {
-		EpochData storage epoch = _epochs[currentEpoch];
-		if (!epoch.isEpochActive) revert SV_EpochNotActive();
-
-		if (epoch.startTime + epochDuration > uint96(block.timestamp)) revert SV_EpochNotEnded();
-
-		uint256 fundsBorrowed_ = epoch.fundsBorrowed;
-
-		// Check if negative PnL exceeds funds borrowed
-		if (pnl < 0 && uint256(-pnl) > fundsBorrowed_) revert SV_LossExceedsBorrowAmount();
-
-		// Calculate funds to be returned by trader
-		uint256 fundsToTransfer = pnl > 0 ? fundsBorrowed_ + uint256(pnl) : fundsBorrowed_ - uint256(-pnl);
-
-		// Track total PnL including both trading and external vault
-
-		// Transfer funds from trader if any
-		if (fundsToTransfer != 0) {
-			IERC20(asset()).safeTransferFrom(msg.sender, address(this), fundsToTransfer);
-		}
-
-		// Calculate ExternalVault yield
-		int256 realizedExternalVaultPnl = epoch.externalVaultPnl;
-		uint256 currentExternalVaultShares = _getExternalVaultBalance();
-
-		if (currentExternalVaultShares != 0) {
-			uint256 assets_ = _externalVaultRedeem(currentExternalVaultShares);
-
-			realizedExternalVaultPnl += int256(assets_) - int256(epoch.currentExternalVaultDeposits);
-		}
-		int256 totalPnl = pnl + realizedExternalVaultPnl + epoch.adminPnl;
-
-		// Update total assets based on PnL (including admin PnL)
-		uint256 finalVaultAssets = uint256(int256(epoch.initialVaultAssets) + totalPnl);
-		_totalAssets = finalVaultAssets;
-		// Update epoch final state
-		epoch.tradingPnl = pnl;
-		epoch.externalVaultPnl = realizedExternalVaultPnl;
-		epoch.finalVaultAssets = finalVaultAssets;
-		epoch.currentExternalVaultDeposits = 0;
-		epoch.currentUnutilizedAsset = 0;
-		epoch.isSettled = true;
-		epoch.endTime = uint96(block.timestamp);
-		epoch.isEpochActive = false;
-
-		// Update vault state - only unpause withdrawals, keep deposits paused
-		withdrawalsPaused = false;
-		// depositsPaused remains true until explicitly enabled by admin
-
-		emit FundsSettled(msg.sender, fundsBorrowed_, pnl);
-		emit EpochEnded(currentEpoch, block.timestamp);
-	}
-
-	/**
-	 * @notice Admin settles borrowed funds and calculates PnL without ending the epoch
-	 * @param amount Amount being returned by admin
-	 */
-	function adminSettle(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
-		EpochData storage epoch = _epochs[currentEpoch];
-		if (!epoch.isEpochActive) revert SV_EpochNotActive();
-
-		uint256 adminFundsBorrowed_ = epoch.adminFundsBorrowed;
-		if (adminFundsBorrowed_ == 0) revert SV_NoAvailableFunds(); // No funds borrowed by admin
-
-		// Transfer returned funds from admin
-		if (amount != 0) {
-			IERC20(asset()).safeTransferFrom(msg.sender, address(this), amount);
-		}
-
-		// Calculate admin PnL: returned amount minus borrowed amount
-		int256 adminPnl = int256(amount) - int256(adminFundsBorrowed_);
-		
-		// Update epoch admin PnL and reset borrowed amount
-		epoch.adminPnl += adminPnl;
-		epoch.adminFundsBorrowed = 0;
-
-		// Update total assets to reflect the net PnL effect
-		// Since we never subtracted the borrowed amount, we only add the PnL
-		_totalAssets = uint256(int256(_totalAssets) + adminPnl);
-
-		emit AdminFundsSettled(msg.sender, adminFundsBorrowed_, amount, adminPnl);
-	}
-	/*//////////////////////////////////////////////////////////////
-                        CORE VAULT LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-	function totalAssets() public view override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		return _totalAssets;
-	}
-
-	function deposit(
-		uint256 assets,
-		address receiver
-	) public override(ERC4626Upgradeable, IERC4626) nonReentrant returns (uint256) {
-		if (depositsPaused) revert SV_DepositsArePaused();
-		uint256 shares = super.deposit(assets, receiver);
-		if (shares == 0) revert SV_ZeroSharesReceived();
-		_totalAssets += assets;
-		return shares;
-	}
-
-	function withdraw(
-		uint256 assets,
-		address receiver,
-		address owner
-	) public override(ERC4626Upgradeable, IERC4626) nonReentrant returns (uint256) {
-		if (withdrawalsPaused) revert SV_WithdrawalsArePaused();
-
-		uint256 shares = super.withdraw(assets, receiver, owner);
-		_totalAssets -= assets;
-		return shares;
-	}
-
-	function mint(
-		uint256 shares,
-		address receiver
-	) public override(ERC4626Upgradeable, IERC4626) nonReentrant returns (uint256) {
-		if (depositsPaused) revert SV_DepositsArePaused();
-
-		uint256 actualAssets = super.mint(shares, receiver);
-		if (actualAssets == 0) revert SV_ZeroAssetsReceived();
-		_totalAssets += actualAssets;
-		return actualAssets;
-	}
-
-	/**
-	 * @notice Redeems vault shares
-	 * @dev Updates internal accounting of total assets
-	 */
-	function redeem(
-		uint256 shares,
-		address receiver,
-		address owner
-	) public override(ERC4626Upgradeable, IERC4626) nonReentrant returns (uint256) {
-		if (withdrawalsPaused) revert SV_WithdrawalsArePaused();
-		uint256 assets = super.redeem(shares, receiver, owner);
-		_totalAssets -= assets;
-		return assets;
-	}
-
-	function _externalVaultRedeem(uint256 shares) internal returns (uint256 redeemed) {
-		if (address(externalVault) != address(0)) {
-			redeemed = externalVault.redeem(shares, address(this), address(this));
+		uint256 idx;
+		for (uint256 i = 0; i < upperBound; i++) {
+			DepositRound storage dr = depositRounds[vault][i];
+			uint256 userAssets = userDepositAmounts[vault][user][i];
+			if (dr.processed && userAssets > 0) {
+				rounds[idx] = i;
+				claimableShares[idx] = (userAssets * dr.totalShares) / dr.totalAssets;
+				idx++;
+			}
 		}
 	}
 
-	/**
-	 * @notice Returns the maximum amount of assets that can be deposited
-	 * @dev Overrides the EIP-4626 maxDeposit function to reflect vault's deposit limit
-	 * @return The maximum amount of assets that can be deposited
-	 */
-	function maxDeposit(address owner) public view virtual override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		if (depositsPaused) return 0;
-		
-		// Check if we've reached the global cap
-		if (_totalAssets >= maxTotalDeposits) return 0;
-		
-		uint256 remaining = maxTotalDeposits - _totalAssets;
-		uint256 superMax = super.maxDeposit(owner);
-		
-		return remaining < superMax ? remaining : superMax;
-	}
+	/// @inheritdoc IRfyVaultManager
+	function getUnclaimedWithdrawalRounds(
+		address vault,
+		address user
+	) external view returns (uint256[] memory rounds, uint256[] memory claimableAssets) {
+		uint256 highestRound = _userHighestWithdrawalRound[vault][user];
+		uint256 currentRound = currentWithdrawalRound[vault];
 
-	/**
-	 * @notice Returns the maximum amount of shares that can be minted
-	 * @dev Overrides the EIP-4626 maxMint function to reflect vault's deposit limit
-	 * @return The maximum amount of shares that can be minted
-	 */
-	function maxMint(address owner) public view virtual override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		if (depositsPaused) return 0;
-		
-		// Check if we've reached the global cap
-		if (_totalAssets >= maxTotalDeposits) return 0;
-		
-		uint256 remaining = maxTotalDeposits - _totalAssets;
-		uint256 superMax = super.maxMint(owner);
-		
-		// Convert remaining assets to shares
-		uint256 remainingShares = previewDeposit(remaining);
-		
-		return remainingShares < superMax ? remainingShares : superMax;
-	}
+		uint256 upperBound = highestRound < currentRound ? highestRound + 1 : currentRound;
 
-	/**
-	 * @notice Returns the maximum amount of assets that can be withdrawn
-	 * @dev Overrides the EIP-4626 maxWithdraw function to reflect vault's withdrawal state
-	 * @return The maximum amount of assets that can be withdrawn
-	 */
-	function maxWithdraw(address owner) public view virtual override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		// If withdrawals are paused, no withdrawals are allowed
-		if (withdrawalsPaused) return 0;
-		return super.maxWithdraw(owner);
-	}
+		uint256 count;
+		for (uint256 i = 0; i < upperBound; i++) {
+			WithdrawalRound storage wr = withdrawalRounds[vault][i];
+			if (wr.processed && userWithdrawalShares[vault][user][i] > 0) {
+				count++;
+			}
+		}
 
-	/**
-	 * @notice Returns the maximum amount of shares that can be redeemed
-	 * @dev Overrides the EIP-4626 maxRedeem function to reflect vault's withdrawal state
-	 * @return The maximum amount of shares that can be redeemed
-	 */
-	function maxRedeem(address owner) public view virtual override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		// If withdrawals are paused, no redemptions are allowed
-		if (withdrawalsPaused) return 0;
+		rounds = new uint256[](count);
+		claimableAssets = new uint256[](count);
 
-		return super.maxRedeem(owner);
-	}
-
-	/**
-	 * @notice Previews the amount of shares received for a deposit
-	 * @dev Returns 0 if deposits are paused
-	 */
-	function previewDeposit(
-		uint256 assets
-	) public view virtual override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		if (depositsPaused) return 0;
-		return super.previewDeposit(assets);
-	}
-
-	/**
-	 * @notice Previews the amount of assets required to mint shares
-	 * @dev Returns 0 if deposits are paused
-	 */
-	function previewMint(uint256 shares) public view virtual override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		if (depositsPaused) return 0;
-		return super.previewMint(shares);
-	}
-
-	/**
-	 * @notice Previews the amount of assets received for a withdrawal
-	 * @dev Returns 0 if withdrawals are paused
-	 */
-	function previewWithdraw(
-		uint256 assets
-	) public view virtual override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		if (withdrawalsPaused) return 0;
-		return super.previewWithdraw(assets);
-	}
-
-	/**
-	 * @notice Returns the maximum amount that can be borrowed during an active epoch
-	 * @return The maximum amount that can be borrowed
-	 */
-	function maxBorrow() public view override returns (uint256) {
-		EpochData memory epoch = _epochs[currentEpoch];
-		if (!epoch.isEpochActive) return 0;
-
-		uint256 unutilized = epoch.currentUnutilizedAsset;
-		uint256 externalVaultDeposits = _getExternalVaultPreviewRedeem();
-		
-		return unutilized + externalVaultDeposits;
-	}
-
-	/**
-	 * @notice Returns the maximum amount that can be borrowed by admin during an active epoch
-	 * @return The maximum amount that can be borrowed by admin
-	 */
-	function maxAdminBorrow() public view returns (uint256) {
-		EpochData memory epoch = _epochs[currentEpoch];
-		if (!epoch.isEpochActive) return 0;
-
-		uint256 unutilized = epoch.currentUnutilizedAsset;
-		uint256 externalVaultDeposits = _getExternalVaultPreviewRedeem();
-		
-		return unutilized + externalVaultDeposits;
-	}
-
-	/**
-	 * @notice Previews the amount of assets received for redeeming shares
-	 * @dev Returns 0 if withdrawals are paused
-	 */
-	function previewRedeem(
-		uint256 shares
-	) public view virtual override(ERC4626Upgradeable, IERC4626) returns (uint256) {
-		if (withdrawalsPaused) return 0;
-		return super.previewRedeem(shares);
-	}
-
-	function getEpochData(uint256 epochId) public view override returns (EpochData memory) {
-		return _epochs[epochId];
-	}
-
-	function _getExternalVaultBalance() internal view returns (uint256 balance) {
-		if (address(externalVault) != address(0)) {
-			balance = externalVault.balanceOf(address(this));
+		uint256 idx;
+		for (uint256 i = 0; i < upperBound; i++) {
+			WithdrawalRound storage wr = withdrawalRounds[vault][i];
+			uint256 userShares = userWithdrawalShares[vault][user][i];
+			if (wr.processed && userShares > 0) {
+				rounds[idx] = i;
+				claimableAssets[idx] = (userShares * wr.totalAssets) / wr.totalShares;
+				idx++;
+			}
 		}
 	}
 
-	function _getExternalVaultPreviewRedeem() internal view returns (uint256 reedemable) {
-		if (address(externalVault) != address(0)) {
-			reedemable = externalVault.previewRedeem(_getExternalVaultBalance());
-		}
+	/// @inheritdoc IRfyVaultManager
+	function getPendingDeposit(
+		address vault,
+		address user
+	) external view returns (uint256 assets, uint256 round) {
+		round = currentDepositRound[vault];
+		assets = userDepositAmounts[vault][user][round];
 	}
 
-	/*//////////////////////////////////////////////////////////////
-                            ADMIN FUNCTIONS
-    //////////////////////////////////////////////////////////////*/
-
-	function setDepositsPaused(bool paused) external override onlyRole(DEFAULT_ADMIN_ROLE) {
-		depositsPaused = paused;
-		emit DepositsStatusUpdated(paused);
-	}
-
-	function setWithdrawalsPaused(bool paused) external override onlyRole(DEFAULT_ADMIN_ROLE) {
-		withdrawalsPaused = paused;
-		emit WithdrawalsStatusUpdated(paused);
-	}
-
-	/**
-	 * @notice Sets the duration for future epochs
-	 * @dev Only admin can set the epoch duration, and it cannot be changed during an active epoch
-	 * @param newDuration New duration in seconds
-	 */
-	function setEpochDuration(uint256 newDuration) external override onlyRole(DEFAULT_ADMIN_ROLE) {
-		EpochData storage epoch = _epochs[currentEpoch];
-		if (epoch.isEpochActive) revert SV_EpochNotActive();
-		if (newDuration == 0) revert SV_InvalidDuration();
-
-		epochDuration = newDuration;
-		emit EpochDurationUpdated(newDuration);
-	}
-
-	/**
-	 * @notice Sets the maximum total deposits allowed in the vault
-	 * @dev Only admin can set this, and it cannot be set lower than current total assets
-	 * @param newMaxTotalDeposits New maximum total deposits
-	 */
-	function setMaxTotalDeposits(uint256 newMaxTotalDeposits) external onlyRole(DEFAULT_ADMIN_ROLE) {
-		if (newMaxTotalDeposits < _totalAssets) revert SV_InvalidAmount();
-		maxTotalDeposits = newMaxTotalDeposits;
-	}
-
-	function pauseAll() external override onlyRole(DEFAULT_ADMIN_ROLE) {
-		depositsPaused = true;
-		withdrawalsPaused = true;
-		emit DepositWithdrawalPaused();
-	}
-
-	function unpauseAll() external override onlyRole(DEFAULT_ADMIN_ROLE) {
-		EpochData storage epoch = _epochs[currentEpoch];
-		if (epoch.isEpochActive) revert SV_EpochNotActive();
-		depositsPaused = false;
-		withdrawalsPaused = false;
-		emit DepositWithdrawalUnpaused();
-	}
-
-	/**
-	 * @notice Allows admin to withdraw reward tokens from external vault integrations
-	 * @dev Cannot withdraw the main vault asset to prevent fund theft
-	 * @param token The reward token address to withdraw
-	 * @param to The address to send the reward tokens to
-	 */
-	function withdrawRewards(address token, address to) external onlyRole(DEFAULT_ADMIN_ROLE) {
-		if (token == asset()) revert SV_InvalidAddress(); // Prevent withdrawing main asset
-		if (to == address(0)) revert SV_InvalidAddress();
-		
-		uint256 balance = IERC20(token).balanceOf(address(this));
-		if (balance == 0) revert SV_NoAvailableFunds();
-		
-		IERC20(token).safeTransfer(to, balance);
-		
-		emit RewardsWithdrawn(token, to, balance);
-	}
-
-	function _authorizeUpgrade(address) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
-}
-
-// src/RfyVaultFactory.sol
-
-/**
- * @title RfyVaultFactory
- * @dev Factory contract for deploying new RfyVault instances
- * @author Shivansh
- * @notice This contract allows the owner to deploy new RfyVault contracts with specified parameters
- */
-contract RfyVaultFactory is Ownable, IRfyVaultFactory {
-	address public immutable override rfyVaultImplementation;
-	
-	/// @dev deployers mapping to track addresses allowed to create vaults
-	mapping(address => bool) public override deployers;
-	
-	/// @dev Array to store all created vault addresses
-	address[] public vaults;
-
-	/**
-	 * @dev Constructor that initializes the Ownable parent contract and sets the implementation address
-	 * @param _rfyVaultImplementation The address of the RfyVault implementation to be cloned
-	 */
-	constructor(address _rfyVaultImplementation) Ownable(msg.sender) {
-		if (_rfyVaultImplementation == address(0)) revert SVF_InvalidImplementationAddress();
-		rfyVaultImplementation = _rfyVaultImplementation;
-		deployers[msg.sender] = true;
-	}
-
-	function updateDeployer(address _deployer, bool _status) external onlyOwner {
-		if (_deployer == address(0)) revert SVF_InvalidAddress();
-		deployers[_deployer] = _status;
-		emit DeployerUpdated(_deployer, _status);
-	}	
-
-	/**
-	 * @notice Creates a new RfyVault instance
-	 * @dev Only callable by the contract owner
-	 * @param _tokenName The name for the vault token
-	 * @param _tokenSymbol The symbol for the vault token
-	 * @param _memeName The meme name for the vault token
-	 * @param _asset The address of the asset token to be used in the vault
-	 * @param _owner The address that will receive admin role
-	 * @param _trader The address that will receive trader role
-	 * @param _externalVault The address of the external vault to be used
-	 * @param _epochDuration The duration of epochs in seconds
-	 * @param _maxTotalDeposits The maximum total deposits allowed in the vault
-	 * @return The address of the newly created RfyVault
-	 */
-	function createVault(
-		string calldata _tokenName,
-		string calldata _tokenSymbol,
-		string calldata _memeName,
-		address _asset,
-		address _owner,
-		address _trader,
-		address _externalVault,
-		uint256 _epochDuration,
-		uint256 _maxTotalDeposits
-	) external override returns (address) {
-
-		if(!deployers[msg.sender]) revert SVF_NotDeployer();
-
-		if (_asset == address(0) || _owner == address(0) || _trader == address(0)) {
-			revert SVF_InvalidAddress();
-		}
-
-		if (_epochDuration <= 0) revert SVF_InvalidEpochDuration();
-
-		address newVault = Clones.clone(rfyVaultImplementation);
-
-		RfyVault(newVault).initialize(
-			_tokenName,
-			_tokenSymbol,
-			_memeName,
-			_asset,
-			_owner,
-			_trader,
-			_externalVault,
-			_epochDuration,
-			_maxTotalDeposits
-		);
-
-		// Store the vault in our registry
-		vaults.push(newVault);
-
-		emit VaultCreated(address(newVault), _asset, _externalVault, vaults.length - 1);
-
-		return address(newVault);
+	/// @inheritdoc IRfyVaultManager
+	function getPendingWithdrawal(
+		address vault,
+		address user
+	) external view returns (uint256 shares, uint256 round) {
+		round = currentWithdrawalRound[vault];
+		shares = userWithdrawalShares[vault][user][round];
 	}
 }
